@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | AtomTask</title>
+</head>
+<body>
+    <h1>
+        Sign Up
+    </h1>
+
+    <p>Already a user? <a href="/login">Login</a></p>
+
+    <hr>
+
+    <form method="POST" action="/createaccount" data-th-object="${signUpForm}">
+        <table>
+            <tr>
+                <td>
+                    Username: 
+                </td>
+                <td>
+                    <input type="text" autocomplete="off" data-th-field="*{username}">
+                </td>
+                <td>
+                    <span data-th-if="${#fields.hasErrors('username')}"
+                        data-th-errors="*{username}"
+                        data-th-errorclass="error"
+                    ></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Password: 
+                </td>
+                <td>
+                    <input type="password" data-th-field="*{password}">
+                </td>
+                <td>
+                    <span data-th-if="${#fields.hasErrors('password')}"
+                        data-th-errors="*{password}"
+                        data-th-errorclass="error"
+                    ></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Confirm Password: 
+                </td>
+                <td>
+                    <input type="password" data-th-field="*{confirmPassword}">
+                </td>
+                <td>
+                    <span data-th-if="${#fields.hasErrors('confirmPassword')}"
+                        data-th-errors="*{confirmPassword}"
+                        data-th-errorclass="error"
+                    ></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Email: 
+                </td>
+                <td>
+                    <input type="email" data-th-field="*{email}">
+                </td>
+                <td>
+                    <span data-th-if="${#fields.hasErrors('email')}"
+                        data-th-errors="*{email}"
+                        data-th-errorclass="error"
+                    ></span>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <button type="submit">Sign Up</button>
+                </td>
+            </tr>
+        </table>
+
+        <div data-th-if="${#fields.hasErrors('global')}" data-th-each="err: ${#fields.errors('global')}">
+            <p data-th-text="${err}"></p>
+        </div>
+
+    </form>
+
+
+    
+</body>
+</html>

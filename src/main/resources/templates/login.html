@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | AtomTask</title>
+</head>
+<body>
+    <h1>
+        Login
+    </h1>
+
+    <p>No account yet? <a href="/signup">Sign up</a></p>
+
+    <hr>
+
+    <form method="POST" action="/auth" data-th-object="${loginForm}">
+        <table>
+            <tr>
+                <td>
+                    Username: 
+                </td>
+                <td>
+                    <input type="text" data-th-field="*{username}">
+                </td>
+                <td>
+                    <span data-th-if="${#fields.hasErrors('username')}"
+                        data-th-errors="*{username}"
+                    ></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Password: 
+                </td>
+                <td>
+                    <input type="password" data-th-field="*{password}">
+                </td>
+                <td>
+                    <span data-th-if="${#fields.hasErrors('password')}"
+                        data-th-errors="*{password}"
+                    ></span>
+                </td>
+                
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <button type="submit">Login</button>
+                </td>
+            </tr>
+        </table>
+
+        <div data-th-if="${#fields.hasErrors('global')}" data-th-each="err: ${#fields.errors('global')}">
+            <p data-th-text="${err}"></p>
+        </div>
+
+    </form>
+    
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Task | AtomTask</title>
+</head>
+<body>
+    <h1>
+        New Task
+    </h1>
+
+    <hr>
+
+    <form method="POST" data-th-object="${task}">
+        <table>
+            <tr>
+                <td>
+                    Task: 
+                </td>
+                <td>
+                    <input type="text" autocomplete="off" data-th-field="*{content}">
+                </td>
+                <td>
+                    <span data-th-if="*{#fields.hasErrors('content')}"
+                        data-th-errors="*{'content'}"
+                    ></span>
+                </td>
+            </tr>
+
+            <tr data-th-if="*{not #lists.isEmpty(subtasks)}" data-th-each="subtask, subtaskStat : *{subtasks}">
+                
+                <td>
+                    Subtask <span data-th-text="${subtaskStat.index} + 1"></span>
+                </td>
+
+                <td>
+                    <input type="text" autocomplete="off" 
+                           data-th-field="*{subtasks[__${subtaskStat.index}__]}" 
+                           data-th-value="${subtask}">
+                </td>
+            </tr>
+            
+            <tr>
+               <td></td>
+               <td>
+                    <button type="submit" formaction="/task/gensubtasks">
+                        Generate sub-tasks
+                    </button>
+               </td> 
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <button type="submit" formaction="/task//addtask">
+                        Add
+                    </button>
+                </td>
+            </tr>
+        </table>
+    </form>
+</body>
+</html>
