@@ -14,6 +14,16 @@
 
     <form method="POST" data-th-object="${task}">
         <table>
+
+            <tr>
+                <td></td>
+                <td>
+                    <button type="submit" formaction="/task/add">
+                        Add
+                    </button>
+                </td>
+            </tr>
+
             <tr>
                 <td>
                     Task: 
@@ -23,10 +33,19 @@
                 </td>
                 <td>
                     <span data-th-if="*{#fields.hasErrors('content')}"
-                        data-th-errors="*{'content'}"
+                        data-th-errors="*{content}"
                     ></span>
                 </td>
             </tr>
+
+            <tr>
+                <td></td>
+                <td>
+                     <button type="submit" formaction="/task/gensubtasks">
+                         Generate sub-tasks
+                     </button>
+                </td> 
+             </tr>
 
             <tr data-th-if="*{not #lists.isEmpty(subtasks)}" data-th-each="subtask, subtaskStat : *{subtasks}">
                 
@@ -41,22 +60,6 @@
                 </td>
             </tr>
             
-            <tr>
-               <td></td>
-               <td>
-                    <button type="submit" formaction="/task/gensubtasks">
-                        Generate sub-tasks
-                    </button>
-               </td> 
-            </tr>
-            <tr>
-                <td></td>
-                <td>
-                    <button type="submit" formaction="/task//addtask">
-                        Add
-                    </button>
-                </td>
-            </tr>
         </table>
     </form>
 </body>

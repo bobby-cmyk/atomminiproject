@@ -49,7 +49,7 @@ public class AppConfig {
 
     @Bean("redisTemplate3")
     public RedisTemplate<String, String> createRedisTemplate3() {
-        return createRedisTemplate(redisDatabase2);
+        return createRedisTemplate(redisDatabase3);
     }
     
     // Give it a name that we can call

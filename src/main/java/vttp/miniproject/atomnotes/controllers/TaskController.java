@@ -74,10 +74,7 @@ public class TaskController {
         
         return mav;  
     }
-
-    /*
-     * 
-    
+ 
     @PostMapping("/add")
     public ModelAndView addTask(
         @Valid Task task,
@@ -106,8 +103,6 @@ public class TaskController {
         return mav;
     }
 
-     */
-
     @PostMapping("/gensubtasks")
     public ModelAndView generateSubtasks(
         @Valid Task task,
@@ -131,8 +126,6 @@ public class TaskController {
         List<String> subtasks = taskSvc.generateSubtasks(content);
 
         task.setSubtasks(subtasks);
-
-        
 
         mav.setViewName("task");
         

@@ -14,6 +14,7 @@ public class ConnectorRepo {
     @Autowired @Qualifier("redisTemplate3")
     private RedisTemplate<String, String> template;
 
+    // smembers username taskId
     public Set<String> getUserTaskIds(String username) {
         
         SetOperations<String, String> setOps = template.opsForSet();
@@ -23,6 +24,7 @@ public class ConnectorRepo {
         return taskIds;
     }
 
+    // srem username taskId
     public void removeTaskId(String username, String taskId) {
 
         SetOperations<String, String> setOps = template.opsForSet();
@@ -30,11 +32,11 @@ public class ConnectorRepo {
         setOps.remove(username, taskId);
     }
 
+    // sadd username taskId
     public void addTaskId(String username, String taskId) {
 
         SetOperations<String, String> setOps = template.opsForSet();
 
         setOps.add(username, taskId);
     }
-    
 }

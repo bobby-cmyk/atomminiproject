@@ -27,7 +27,7 @@ public class TaskRepo {
         return Task.mapToTask(taskMap);
     }
 
-    // hsetall 
+    // hsetall taskId key1 value1 key2 value2 ... 
     public void addTask(Task task) {
 
         HashOperations<String, String, String> hashOps = template.opsForHash();
@@ -37,6 +37,7 @@ public class TaskRepo {
         String taskId = task.getId();
 
         values.put("id", taskId);
+        values.put("addedEpochTime", String.valueOf(task.getAddedEpochTime()));
         values.put("content", task.getContent());
         values.put("subtasks", task.getSubtasksString());
 

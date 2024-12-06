@@ -1,10 +1,13 @@
 package vttp.miniproject.atomnotes.services;
 
 import java.io.StringReader;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
@@ -17,9 +20,17 @@ import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 import vttp.miniproject.atomnotes.models.Task;
+import vttp.miniproject.atomnotes.repositories.ConnectorRepo;
+import vttp.miniproject.atomnotes.repositories.TaskRepo;
 
 @Service
 public class TaskService {
+
+    @Autowired
+    private TaskRepo taskRepo;
+
+    @Autowired
+    private ConnectorRepo connectorRepo;
 
     @Value("${OPENAI.API.KEY}")
     private String OPENAI_API_KEY;
@@ -93,43 +104,15 @@ public class TaskService {
             return subtasks;
         }
     }
-}
 
+    public void addTask(String username, Task task) {
+        String taskId = UUID.randomUUID().toString();
+        long createdEpochTime = Instant.now().toEpochMilli();
 
-/*
- * 
- * {
-  "id": "chatcmpl-Ab3oegVU9yUaYMhUwMgFVsNtdZGMW",
-  "object": "chat.completion",
-  "created": 1733396168,
-  "model": "gpt-4o-mini-2024-07-18",
-  "choices": [
-    {
-      "index": 0,
-      "message": {
-        "role": "assistant",
-        "content": "Set an alarm for an early wake-up, prepare tennis gear, confirm the meeting time with Brandon.",
-        "refusal": null
-      },
-      "logprobs": null,
-      "finish_reason": "stop"
+        task.setId(taskId);
+        task.setAddedEpochTime(createdEpochTime);
+
+        taskRepo.addTask(task);
+        connectorRepo.addTaskId(username, taskId);
     }
-  ],
-  "usage": {
-    "prompt_tokens": 47,
-    "completion_tokens": 20,
-    "total_tokens": 67,
-    "prompt_tokens_details": {
-      "cached_tokens": 0,
-      "audio_tokens": 0
-    },
-    "completion_tokens_details": {
-      "reasoning_tokens": 0,
-      "audio_tokens": 0,
-      "accepted_prediction_tokens": 0,
-      "rejected_prediction_tokens": 0
-    }
-  },
-  "system_fingerprint": "fp_0705bf87c0"
 }
- */

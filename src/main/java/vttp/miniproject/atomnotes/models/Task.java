@@ -1,5 +1,8 @@
 package vttp.miniproject.atomnotes.models;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -7,7 +10,10 @@ import java.util.Map;
 import jakarta.validation.constraints.NotEmpty;
 
 public class Task {
+
     private String id;
+
+    private long addedEpochTime;
 
     @NotEmpty(message = "Task cannot be empty")
     private String content;
@@ -19,6 +25,23 @@ public class Task {
     }
     public void setId(String id) {
         this.id = id;
+    }
+
+    public long getAddedEpochTime() {
+        return addedEpochTime;
+    }
+
+    public void setAddedEpochTime(long addedEpochTime) {
+        this.addedEpochTime = addedEpochTime;
+    }
+
+    public LocalDateTime getAddedDateTime() {
+        
+        Instant instant = Instant.ofEpochMilli(addedEpochTime);
+        ZoneId zoneId = ZoneId.systemDefault();
+        LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
+
+        return localDateTime;
     }
 
     public String getContent() {
@@ -36,7 +59,7 @@ public class Task {
         String subtasksString = "";
 
         for (String subtask : subtasks) {
-            subtasksString += ", " + subtask;
+            subtasksString += subtask + ", ";
         }
 
         subtasksString = subtasksString.substring(0, subtasksString.length() - 2);

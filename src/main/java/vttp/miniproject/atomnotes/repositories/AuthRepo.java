@@ -22,7 +22,7 @@ public class AuthRepo {
         return template.hasKey(username);
     }
 
-    // hset username_key id id_value email email_value username username_value password password_value
+    // hset username fieldkey1 fieldvalue1 fieldkey2 fieldvalue2 ...
     public void createAccount(User user) {
 
         HashOperations<String, String, String> hashOps = template.opsForHash();
@@ -32,6 +32,7 @@ public class AuthRepo {
         values.put("email", user.getEmail());
         values.put("username", user.getUsername());
         values.put("password", user.getPassword());
+        values.put("createdEpochTime", String.valueOf(user.getCreatedEpochTime()));
 
         hashOps.putAll(user.getUsername(), values);
     }

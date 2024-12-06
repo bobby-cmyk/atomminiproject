@@ -1,5 +1,6 @@
 package vttp.miniproject.atomnotes.services;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +26,14 @@ public class AuthService {
 
         // Generate a unique id for user
         String id = UUID.randomUUID().toString();
+        long createdEpochTime = Instant.now().toEpochMilli();
 
         // Set information for user;
         user.setId(id);
         user.setUsername(signUpForm.getUsername());
         user.setPassword(signUpForm.getPassword());
         user.setEmail(signUpForm.getEmail());
+        user.setCreatedEpochTime(createdEpochTime);
 
         authRepo.createAccount(user);
     }
