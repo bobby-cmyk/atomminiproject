@@ -4,8 +4,10 @@ import java.io.StringReader;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +34,9 @@ public class TaskService {
     @Autowired
     private ConnectorRepo connectorRepo;
 
+    @Autowired
+    private HelperService helperSvc;
+
     @Value("${OPENAI.API.KEY}")
     private String OPENAI_API_KEY;
 
@@ -46,8 +51,10 @@ public class TaskService {
         
         // 2. Json Payload
         String model = "gpt-4o-mini";
-        String systemPrompt = "Break down task into 3 smaller subtasks. Keep concise. Output format: 'subtask1, subtask2, subtask3'";
-        String userPrompt = content;
+        String systemPrompt = "Break down task into 3 smaller subtasks. Keep concise. Output format: 'subtask1|subtask2|subtask3'";
+        String userPrompt = "{Task: " + content + ", Current DateTime: " + helperSvc.getCurrentDateTime() + "}";
+
+        logger.info("User prompt: %s".formatted(userPrompt));
 
         JsonObject reqBody = Json.createObjectBuilder()
             .add("model", model)
@@ -107,12 +114,47 @@ public class TaskService {
 
     public void addTask(String username, Task task) {
         String taskId = UUID.randomUUID().toString();
-        long createdEpochTime = Instant.now().toEpochMilli();
+        long addedEpochTime = Instant.now().toEpochMilli();
 
         task.setId(taskId);
-        task.setAddedEpochTime(createdEpochTime);
+        task.setAddedEpochTime(addedEpochTime);
 
         taskRepo.addTask(task);
         connectorRepo.addTaskId(username, taskId);
+    }
+
+    public Task getTask(String taskId) {
+
+        Task task = taskRepo.getTask(taskId);
+
+        return task;
+    }
+
+    public List<Task> getAllSortedTasks(String user) {
+
+        Set<String> taskIds = connectorRepo.getUserTaskIds(user);
+
+        List<Task> tasks = new ArrayList<>(taskRepo.getTasks(taskIds));
+
+        // Sort reverse, descending from latest to oldest
+        List<Task> sortedTasks = tasks.stream()
+            .sorted((t1, t2) -> Long.compare(t2.getAddedEpochTime(), t1.getAddedEpochTime()))
+            .collect(Collectors.toList());
+            
+        return sortedTasks;
+    }
+
+    public void deleteTask(String username, String taskId) {
+        taskRepo.deleteTask(taskId);
+        connectorRepo.deleteTaskId(username, taskId);
+    }
+
+    public void updateTask(Task task) {
+
+        // Update epoch time
+        long addedEpochTime = Instant.now().toEpochMilli();
+        task.setAddedEpochTime(addedEpochTime);
+        
+        taskRepo.updateTask(task);
     }
 }

@@ -39,4 +39,12 @@ public class ConnectorRepo {
 
         setOps.add(username, taskId);
     }
+
+    // srem username taskId
+    public void deleteTaskId(String username, String taskId) {
+
+        SetOperations<String, String> setOps = template.opsForSet();
+
+        setOps.remove(username, taskId);
+    }
 }

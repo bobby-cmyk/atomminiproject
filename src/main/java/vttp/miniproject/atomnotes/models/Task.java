@@ -18,11 +18,12 @@ public class Task {
     @NotEmpty(message = "Task cannot be empty")
     private String content;
 
-    private List<String> subtasks;
+    private List<String> subtasks = new ArrayList<>();
 
     public String getId() {
         return id;
     }
+    
     public void setId(String id) {
         this.id = id;
     }
@@ -56,13 +57,18 @@ public class Task {
     }
 
     public String getSubtasksString() {
+
         String subtasksString = "";
 
+        if (subtasks.isEmpty()) {
+            return subtasksString;
+        }
+        
         for (String subtask : subtasks) {
-            subtasksString += subtask + ", ";
+            subtasksString += subtask + "|";
         }
 
-        subtasksString = subtasksString.substring(0, subtasksString.length() - 2);
+        subtasksString = subtasksString.substring(0, subtasksString.length() - 1);
 
         return subtasksString;
     }
@@ -81,7 +87,7 @@ public class Task {
 
         task.setId(taskMap.get("id"));
         task.setContent(taskMap.get("content"));
-
+        task.setAddedEpochTime(Long.parseLong(taskMap.get("addedEpochTime")));
         
         String subtasksString = taskMap.get("subtasks");
         
@@ -94,10 +100,15 @@ public class Task {
 
 
     public static List<String> subtasksStringToList(String subtasksString) {
-
-        String[] subtasksParts = subtasksString.split(", ");
-
+        
         List<String> subtasks = new ArrayList<>();
+
+        // if no subtasks submitted
+        if (subtasksString.isEmpty()) {
+            return subtasks;
+        }
+        
+        String[] subtasksParts = subtasksString.split("\\|");
 
         for (int i = 0; i < subtasksParts.length; i++) {
             subtasks.add(subtasksParts[i]);
@@ -105,55 +116,10 @@ public class Task {
 
         return subtasks;
     } 
+
+    @Override
+    public String toString() {
+        return "Task [id=" + id + ", addedEpochTime=" + addedEpochTime + ", content=" + content + ", subtasks="
+                + subtasks + "]";
+    }
 }
-
-/*
-    public JsonObject toJsonObj() {
-
-        JsonArrayBuilder subtasksBuilder = Json.createArrayBuilder();
-
-        for (String subtask : subtasks) {
-            subtasksBuilder.add(subtask);
-        }
-
-        JsonObject taskObj = Json.createObjectBuilder()
-            .add("id", id)
-            .add("content", content)
-            .add("subtasks", subtasksBuilder)
-            .build();
-
-        return taskObj;
-    }
-
-    public JsonObject taskToJsonObj() {
-        
-        JsonArrayBuilder subtasksBuilder = Json.createArrayBuilder();
-
-        for (String subtask : subtasks) {
-            subtasksBuilder.add(subtask);
-        }
-
-        JsonObject taskObj = Json.createObjectBuilder()
-            .add("id", id)
-            .add("description", description)
-            .add("subtasks", subtasksBuilder)
-            .build();
-
-        return taskObj;
-    }
-
-    public static Task jsonObjToTask(JsonObject taskObj) {
-        Task task = new Task();
-
-        task.setId(taskObj.getString("id"));
-        task.setDescription(taskObj.getString("description"));
-
-        JsonArray subtasksArr = taskObj.getJsonArray("subtasks");
-
-        for (int i = 0; i < subtasksArr.size(); i++) {
-            task.addSubtask(subtasksArr.getString(i));
-        }
-
-        return task;
-    }
-    */

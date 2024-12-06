@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Task | AtomTask</title>
+    <title>Edit Task | AtomTask</title>
 </head>
 <body>
     <h1>
-        New Task
+        Edit Task
     </h1>
 
     <hr>
@@ -18,8 +18,9 @@
             <tr>
                 <td></td>
                 <td>
-                    <button type="submit" formaction="/task/add">
-                        Add
+                    <input type="hidden" data-th-value="*{id}" data-th-field="*{id}">
+                    <button type="submit" formaction="/task/update">
+                        Update
                     </button>
                 </td>
             </tr>
@@ -29,7 +30,9 @@
                     Task: 
                 </td>
                 <td>
-                    <input type="text" autocomplete="off" data-th-field="*{content}">
+                    <input type="text" autocomplete="off" 
+                        dath-th-value="*{content}" 
+                        data-th-field="*{content}">
                 </td>
                 <td>
                     <span data-th-if="*{#fields.hasErrors('content')}"
@@ -41,7 +44,7 @@
             <tr>
                 <td></td>
                 <td>
-                     <button type="submit" formaction="/task/gensubtasks">
+                     <button type="submit" formaction="/task/edit/gensubtasks">
                          Generate sub-tasks
                      </button>
                 </td> 
