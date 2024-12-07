@@ -18,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import vttp.miniproject.atomnotes.models.Task;
+import vttp.miniproject.atomnotes.services.GenService;
 import vttp.miniproject.atomnotes.services.TaskService;
 
 @Controller
@@ -28,6 +29,9 @@ public class TaskController {
 
     @Autowired
     private TaskService taskSvc;
+
+    @Autowired
+    private GenService genSvc;
 
     @GetMapping("/all")
     public ModelAndView getHome(
@@ -52,7 +56,7 @@ public class TaskController {
         List<Task> tasks = taskSvc.getAllSortedTasks(user);
 
         mav.addObject("tasks", tasks);
-        mav.setViewName("home");
+        mav.setViewName("task-all");
         
         return mav;
     }
@@ -102,6 +106,10 @@ public class TaskController {
         }
 
         String user = sess.getAttribute("user").toString();
+
+        String imageUrl = genSvc.retrieveImageUrl(task.getContent());
+
+        task.setImageUrl(imageUrl);
 
         taskSvc.addTask(user, task);
 
@@ -156,7 +164,7 @@ public class TaskController {
 
         logger.info("Generating subtasks for task: %s".formatted(content));
 
-        List<String> subtasks = taskSvc.generateSubtasks(content);
+        List<String> subtasks = genSvc.generateSubtasks(content);
 
         task.setSubtasks(subtasks);
 
@@ -185,7 +193,7 @@ public class TaskController {
 
         logger.info("Generating subtasks for task: %s".formatted(content));
 
-        List<String> subtasks = taskSvc.generateSubtasks(content);
+        List<String> subtasks = genSvc.generateSubtasks(content);
 
         task.setSubtasks(subtasks);
 

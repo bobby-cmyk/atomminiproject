@@ -3,10 +3,13 @@ package vttp.miniproject.atomnotes.models;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 import jakarta.validation.constraints.NotEmpty;
 
 public class Task {
@@ -14,6 +17,8 @@ public class Task {
     private String id;
 
     private long addedEpochTime;
+
+    private String imageUrl;
 
     @NotEmpty(message = "Task cannot be empty")
     private String content;
@@ -36,13 +41,24 @@ public class Task {
         this.addedEpochTime = addedEpochTime;
     }
 
-    public LocalDateTime getAddedDateTime() {
+    public String getAddedDateTime() {
         
         Instant instant = Instant.ofEpochMilli(addedEpochTime);
         ZoneId zoneId = ZoneId.systemDefault();
         LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
 
-        return localDateTime;
+        // Define the formatter to match "Mon, 2:30pm, 26 Nov 2024"
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE, h:mma, d MMM yyyy", java.util.Locale.ENGLISH);
+        
+        return localDateTime.format(formatter);
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public String getContent() {
@@ -63,7 +79,7 @@ public class Task {
         if (subtasks.isEmpty()) {
             return subtasksString;
         }
-        
+
         for (String subtask : subtasks) {
             subtasksString += subtask + "|";
         }
@@ -88,6 +104,7 @@ public class Task {
         task.setId(taskMap.get("id"));
         task.setContent(taskMap.get("content"));
         task.setAddedEpochTime(Long.parseLong(taskMap.get("addedEpochTime")));
+        task.setImageUrl(taskMap.get("imageUrl"));
         
         String subtasksString = taskMap.get("subtasks");
         
@@ -115,11 +132,21 @@ public class Task {
         }
 
         return subtasks;
-    } 
-
+    }
+    
     @Override
     public String toString() {
         return "Task [id=" + id + ", addedEpochTime=" + addedEpochTime + ", content=" + content + ", subtasks="
                 + subtasks + "]";
+    }
+
+    public JsonObject getTaskJsonObject() {
+        
+        JsonObject object = Json.createObjectBuilder()
+            .add("added_datetime", getAddedDateTime())
+            .add("content", getContent())
+            .build();
+
+        return object;
     }
 }

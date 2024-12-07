@@ -1,3 +1,127 @@
-/* Playfair Display - serif */ 
-/* IBM Plex Sans - san-serif */
-/* Follow Hinge (Dating App) Design */
+/* Reset and base styling (you can use your existing reset.css if desired) */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Root sizing and font scaling */
+html {
+    font-size: 100%; /* 1rem = 16px by default */
+    /* If you like, you can use clamp for responsive font sizing globally */
+    /* font-size: clamp(14px, 2vw, 16px); */
+}
+
+/* Body styles */
+body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    /* For backgrounds or theme colors, start basic and scale up as needed */
+    background: #fff;
+    color: #000;
+    line-height: 1.5;
+}
+
+/* The nav with the logo */
+nav {
+    width: 96%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: clamp(0.5rem, 2vw, 1.5rem) 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Logo inside nav */
+.login-logo {
+    max-width: 50px;
+    width: 100%;
+    height: auto;
+}
+
+/* The login container that holds everything */
+.login-container {
+    /* Use a fluid width and center it. It will grow until max-width */
+    width: 96%;
+    max-width: 480px;
+    margin: 0 auto;
+
+    /* Vertical stacking for mobile-first. 
+       Just a single column layout is fine here. */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    /* Add some vertical space between elements without using many margins */
+    gap: clamp(1rem, 2vw, 2rem);
+
+    padding: clamp(1rem, 3vw, 2rem) 0;
+}
+
+/* The title above the form */
+.login-container p.ibm-plex-sans-medium {
+    font-weight: 500;
+    text-align: center;
+    font-size: clamp(1.25rem, 4vw, 2rem); 
+    /* Starts at about 20px on mobile and scales up to 32px at larger screens */
+}
+
+/* Form styling */
+form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.75rem, 2vw, 1.25rem);
+    /* The gap scales slightly as screen grows, no media queries needed */
+}
+
+/* Inputs */
+.form-input {
+    width: 100%;
+    padding: clamp(0.5rem, 2vw, 0.75rem);
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: clamp(1rem, 2vw, 1.125rem);
+    /* The font slightly scales up for larger screens */
+}
+
+/* Error messages (if any) */
+span[data-th-if] {
+    color: red;
+    font-size: clamp(0.875rem, 1.5vw, 1rem);
+    /* Slight scaling if desired */
+}
+
+/* Submit button */
+.login-button {
+    width: 100%;
+    padding: clamp(0.75rem, 2vw, 1rem);
+    background: #000;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.login-button:hover {
+    background: #333;
+}
+
+/* The sign-up link at bottom */
+.login-container p.ibm-plex-sans-regular {
+    text-align: center;
+    font-size: clamp(1rem, 2vw, 1.125rem);
+}
+
+.login-container p.ibm-plex-sans-regular a {
+    text-decoration: none;
+    color: #0073e6;
+    transition: color 0.3s ease;
+}
+
+.login-container p.ibm-plex-sans-regular a:hover {
+    color: #005bb5;
+}

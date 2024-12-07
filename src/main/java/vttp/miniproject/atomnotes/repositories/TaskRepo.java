@@ -60,6 +60,7 @@ public class TaskRepo {
         values.put("addedEpochTime", Long.toString(task.getAddedEpochTime()));
         values.put("content", task.getContent());
         values.put("subtasks", task.getSubtasksString());
+        values.put("imageUrl", task.getImageUrl());
 
         hashOps.putAll(taskId, values);
     }
@@ -83,6 +84,7 @@ public class TaskRepo {
         values.put("addedEpochTime", Long.toString(task.getAddedEpochTime()));
         values.put("content", task.getContent());
         values.put("subtasks", task.getSubtasksString());
+        values.put("imageUrl", task.getImageUrl());
 
         //Overwrite
         hashOps.putAll(taskId, values);

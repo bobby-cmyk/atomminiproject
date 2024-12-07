@@ -16,42 +16,15 @@
 
     <hr>
 
-    <form method="GET" action="/task/new">
+    <form method="GET" action="/task/all">
         <button type="submit">
-            New Task
+            View all tasks
         </button>
     </form>
 
+    <div>
+        <p data-th-text="${schedule}"></p>
+    </div>
 
-    <table data-th-each="task : ${tasks}" data-th-object="${task}">
-        <tr>
-            <td>
-                <h3 data-th-text="*{content}"></h3>
-            </td>
-            <td>
-                <!-- passthrough the form-->
-                <form method="GET" action="/task/edit">
-                    <input type="hidden" name="taskId" data-th-value="*{id}">
-                    <button type="submit">
-                        Edit
-                    </button>
-                </form>
-            </td>
-            <td>
-                <form method="POST" action="/task/delete">
-                    <input type="hidden" name="taskId" data-th-value="*{id}">
-                    <button type="submit">
-                        Done
-                    </button>
-                </form>
-            </td>
-        </tr>
-        <tr data-th-each="subtask : *{subtasks}">
-            <td>
-                <p data-th-text="${subtask}"></p>
-            </td>
-            
-        </tr>
-    </table>
 </body>
 </html>
