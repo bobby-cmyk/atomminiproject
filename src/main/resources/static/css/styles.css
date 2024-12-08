@@ -1,127 +1,269 @@
-/* Reset and base styling (you can use your existing reset.css if desired) */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-/* Root sizing and font scaling */
-html {
-    font-size: 100%; /* 1rem = 16px by default */
-    /* If you like, you can use clamp for responsive font sizing globally */
-    /* font-size: clamp(14px, 2vw, 16px); */
-}
-
-/* Body styles */
-body {
-    font-family: 'IBM Plex Sans', sans-serif;
-    /* For backgrounds or theme colors, start basic and scale up as needed */
+.landing-container {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    max-width: 100%;
+    overflow: hidden;
     background: #fff;
     color: #000;
-    line-height: 1.5;
+    font-family: 'IBM Plex Sans', sans-serif;
 }
 
-/* The nav with the logo */
-nav {
-    width: 96%;
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: clamp(0.5rem, 2vw, 1.5rem) 0;
+.image-container {
+    flex: 3; 
+    position: relative;
+    width: 60%;
+}
+
+.landing-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    filter: grayscale(100%)
+}
+
+.auth-container {
+    flex: 2;
+    width: 40%;
     display: flex;
-    align-items: center;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
+    padding: 2rem;
 }
 
-/* Logo inside nav */
 .login-logo {
-    max-width: 50px;
-    width: 100%;
-    height: auto;
+    max-width: 200px;
+    margin-bottom: 2rem;
 }
 
-/* The login container that holds everything */
-.login-container {
-    /* Use a fluid width and center it. It will grow until max-width */
-    width: 96%;
-    max-width: 480px;
-    margin: 0 auto;
-
-    /* Vertical stacking for mobile-first. 
-       Just a single column layout is fine here. */
+.auth-form-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    /* Add some vertical space between elements without using many margins */
-    gap: clamp(1rem, 2vw, 2rem);
-
-    padding: clamp(1rem, 3vw, 2rem) 0;
-}
-
-/* The title above the form */
-.login-container p.ibm-plex-sans-medium {
-    font-weight: 500;
-    text-align: center;
-    font-size: clamp(1.25rem, 4vw, 2rem); 
-    /* Starts at about 20px on mobile and scales up to 32px at larger screens */
-}
-
-/* Form styling */
-form {
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: clamp(0.75rem, 2vw, 1.25rem);
-    /* The gap scales slightly as screen grows, no media queries needed */
+    max-width: 360px;
 }
 
-/* Inputs */
-.form-input {
-    width: 100%;
-    padding: clamp(0.5rem, 2vw, 0.75rem);
-    border: 1px solid #ccc;
+.auth-form-input {
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    border: 1px solid #e0e0e0;
     border-radius: 4px;
-    font-size: clamp(1rem, 2vw, 1.125rem);
-    /* The font slightly scales up for larger screens */
+    font-size: 1rem;
+}
+.auth-form-button {
+    background-color: #000000;
+    color: white;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-/* Error messages (if any) */
+.auth-form-button:hover {
+    background-color: #333333;
+}
+
+/* Error Handling */
 span[data-th-if] {
     color: red;
-    font-size: clamp(0.875rem, 1.5vw, 1rem);
-    /* Slight scaling if desired */
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
 }
 
-/* Submit button */
-.login-button {
-    width: 100%;
-    padding: clamp(0.75rem, 2vw, 1rem);
-    background: #000;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    font-size: clamp(1rem, 2vw, 1.25rem);
-    cursor: pointer;
-    transition: background 0.3s ease;
-}
-
-.login-button:hover {
-    background: #333;
-}
-
-/* The sign-up link at bottom */
-.login-container p.ibm-plex-sans-regular {
-    text-align: center;
-    font-size: clamp(1rem, 2vw, 1.125rem);
-}
-
-.login-container p.ibm-plex-sans-regular a {
+/* Link Styles */
+.auth-link {
+    color: #000000;
     text-decoration: none;
-    color: #0073e6;
-    transition: color 0.3s ease;
+    font-weight: 600;
 }
 
-.login-container p.ibm-plex-sans-regular a:hover {
-    color: #005bb5;
+.auth-link:hover {
+    text-decoration: underline;
 }
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .landing-container {
+        flex-direction: column;
+    }
+    
+    .image-container, 
+    .auth-container {
+        width: 100%;
+        flex: none;
+        height: 100vh;
+        position: absolute;
+    }
+    
+    .image-container {
+        z-index: 1;
+    }
+    
+    .landing-image {
+        filter: grayscale(100%) brightness(0.5); /* Darken the background image */
+    }
+    
+    .auth-container {
+        z-index: 2;
+        background-color: transparent;
+        color: white;
+    }
+    
+    .login-logo {
+        content: url('/logos/white_transparent.png'); /* Switch to white logo */
+    }
+    
+    .auth-form-container {
+        background-color: rgba(0,0,0,0.3); /* Slightly darker form background */
+        padding: 2rem;
+        border-radius: 10px;
+    }
+    
+    .auth-form-input {
+        background-color: rgba(255,255,255,0.1);
+        border: 1px solid rgba(255,255,255,0.3);
+        color: white;
+    }
+    
+    .auth-form-input::placeholder {
+        color: rgba(255,255,255,0.7);
+    }
+    
+    .auth-form-button {
+        background-color: white;
+        color: black;
+    }
+    
+    .auth-link {
+        color: white;
+        font-weight: bold;
+    }
+}
+
+.home-container {
+    background-color: #f5f5f5;
+}
+
+.tasks-container {
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+.task-card {
+    margin-bottom: 24px;
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    position: relative;
+}
+
+.task-content {
+    font-size: 24px;
+    padding: 8px 16px 2px 16px;
+}
+
+.task-image {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    filter: grayscale(100%);
+    display: block;
+}
+
+.subtask-content {
+    font-size: 14px;
+    padding: 2px 16px;
+}
+
+.subtasks-container {
+    margin-bottom: 8px;
+}
+
+.task-buttons-container {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 16px;
+    pointer-events: none; /* Ensures underlying image is still clickable */
+}
+
+.task-button {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    pointer-events: auto; /* Makes buttons clickable */
+}
+
+.edit-button {
+    background-color: #fff;
+    color: #000;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
+    transition: box-shadow 0.3s ease; /* Smooth shadow transition */
+}
+
+.edit-button:hover {
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Slightly larger shadow on hover */
+}
+
+.delete-button {
+    background-color: #fff;
+    color: #000;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
+    transition: box-shadow 0.3s ease; /* Smooth shadow transition */
+}
+
+.delete-button:hover {
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Slightly larger shadow on hover */
+}
+
+
+/*
+
+<div class="tasks-container">
+
+        <div class="task-card" data-th-each="task : ${tasks}" data-th-object="${task}">
+
+            <p class="task-content" data-th-text="*{content}"></p>
+
+            <img class="task-image" data-th-src="*{imageUrl}">
+
+            <div class="subtasks-container">
+                <p class="subtask-content" data-th-each="subtask : *{subtasks}" data-th-text="${subtask}"></p>
+            </div>
+
+            <div class="task-buttons-container">
+
+                <form method="GET" action="/task/edit">
+                    <input type="hidden" name="taskId" data-th-value="*{id}">
+                    <button type="submit">
+                        Edit
+                    </button>
+                </form>
+
+                <form method="POST" action="/task/delete">
+                    <input type="hidden" name="taskId" data-th-value="*{id}">
+                    <button type="submit">
+                        Done
+                    </button>
+                </form>
+                
+            </div>
+        </div>
+    </div>
+    
+*/

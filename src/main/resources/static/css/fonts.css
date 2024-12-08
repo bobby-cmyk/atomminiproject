@@ -1,6 +1,26 @@
-/* Playfair Display - serif */ 
+/* Libre Baskerville - serif */ 
 /* IBM Plex Sans - san-serif */
 /* Follow Hinge (Dating App) Design */
+
+.libre-baskerville-regular {
+    font-family: "Libre Baskerville", serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+  
+  .libre-baskerville-bold {
+    font-family: "Libre Baskerville", serif;
+    font-weight: 700;
+    font-style: normal;
+  }
+  
+  .libre-baskerville-regular-italic {
+    font-family: "Libre Baskerville", serif;
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  
 .ibm-plex-sans-thin {
     font-family: "IBM Plex Sans", sans-serif;
     font-weight: 100;

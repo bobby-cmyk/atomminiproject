@@ -48,7 +48,7 @@ public class GenService {
             .queryParam("query", generateMainTopic(content))
             .queryParam("page", 1)
             .queryParam("per_page", 10)
-            .queryParam("color", "black_and_white")
+            //.queryParam("color", "black_and_white")
             .toUriString();
 
         logger.info("UNSPLASH_API_KEY: %S".formatted(UNSPLASH_API_KEY));
@@ -73,13 +73,23 @@ public class GenService {
 
             JsonArray resultsArr = payloadObj.getJsonArray("results");
 
+            int bound = 10;
+
+            int arrSize = resultsArr.size();
+
+            if (arrSize < bound) {
+                bound = arrSize;
+            }
+
             Random rand = new Random();
 
-            JsonObject resultObj = resultsArr.getJsonObject(rand.nextInt(10));
+            int imageIndex = rand.nextInt(bound);
+
+            JsonObject resultObj = resultsArr.getJsonObject(rand.nextInt(imageIndex));
 
             JsonObject urlsObj = resultObj.getJsonObject("urls");
 
-            imageUrl = urlsObj.getString("small");
+            imageUrl = urlsObj.getString("regular");
 
             logger.info("image url: %s".formatted(imageUrl));
 
@@ -102,7 +112,7 @@ public class GenService {
         
         // 2. Json Payload
         String model = "gpt-4o-mini";
-        String systemPrompt = "Extract the main object or event in one word";
+        String systemPrompt = "Extract the main object or event in one word or a phrase";
         String userPrompt = content;
 
         logger.info("User prompt: %s".formatted(userPrompt));

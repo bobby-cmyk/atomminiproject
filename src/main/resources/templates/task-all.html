@@ -4,9 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>All Tasks | AtomTask</title>
+    <link rel='stylesheet' href="/css/reset.css">
+    <link rel='stylesheet' href="/css/fonts.css">
+    <link rel='stylesheet' href="/css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 </head>
-<body>
-    <h1>All Tasks</h1>
+<body class="home-container">
 
     <form method="POST" action="/logout">
         <button type="submit">
@@ -22,47 +28,43 @@
 
     <hr>
 
-    <form method="GET" action="/task/new">
+    <form class="" method="GET" action="/task/new">
         <button type="submit">
             New Task
         </button>
     </form>
 
+    <div class="tasks-container">
 
-    <table border="1" data-th-each="task : ${tasks}" data-th-object="${task}">
-        <tr>
-            <td>
-                <img data-th-src="*{imageUrl}">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <h3 data-th-text="*{content}"></h3>
-            </td>
-            <td>
-                <!-- passthrough the form-->
-                <form method="GET" action="/task/edit">
+        <div class="task-card" data-th-each="task : ${tasks}" data-th-object="${task}">
+
+            <p class="task-content libre-baskerville-regular" data-th-text="*{content}"></p>
+
+            <div class="subtasks-container ibm-plex-sans-light">
+                <p class="subtask-content" data-th-each="subtask : *{subtasks}" data-th-text="${subtask}"></p>
+            </div>
+
+            <img class="task-image" data-th-src="*{imageUrl}">
+
+            <div class="task-buttons-container">
+
+                <form method="GET" action="/task/edit"  class="edit-form">
                     <input type="hidden" name="taskId" data-th-value="*{id}">
-                    <button type="submit">
+                    <button type="submit" class="task-button edit-button">
                         Edit
                     </button>
                 </form>
-            </td>
-            <td>
-                <form method="POST" action="/task/delete">
+
+                <form method="POST" action="/task/delete" class="delete-form">
                     <input type="hidden" name="taskId" data-th-value="*{id}">
-                    <button type="submit">
+                    <button type="submit" class="task-button delete-button">
                         Done
                     </button>
                 </form>
-            </td>
-        </tr>
-        <tr data-th-each="subtask : *{subtasks}">
-            <td>
-                <p data-th-text="${subtask}"></p>
-            </td>
-            
-        </tr>
-    </table>
+                
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>

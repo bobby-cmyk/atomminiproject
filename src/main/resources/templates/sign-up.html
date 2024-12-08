@@ -3,90 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up | AtomTask</title>
+    <title>Sign Up | Atom</title>
+    <link rel='stylesheet' href="/css/reset.css">
+    <link rel='stylesheet' href="/css/fonts.css">
+    <link rel='stylesheet' href="/css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 </head>
-<body>
-    <h1>
-        Sign Up
-    </h1>
+<body class="landing-container">
 
-    <p>Already a user? <a href="/login">Login</a></p>
+    <div class="image-container">
+        <img class="landing-image" src="https://images.unsplash.com/photo-1417325384643-aac51acc9e5d?q=75&fm=jpg&w=1080&fit=max">
+    </div>
+        
 
-    <hr>
+    <div class="auth-container">
 
-    <form method="POST" action="/createaccount" data-th-object="${signUpForm}">
-        <table>
-            <tr>
-                <td>
-                    Username: 
-                </td>
-                <td>
-                    <input type="text" autocomplete="off" data-th-field="*{username}">
-                </td>
-                <td>
-                    <span data-th-if="${#fields.hasErrors('username')}"
-                        data-th-errors="*{username}"
-                        data-th-errorclass="error"
-                    ></span>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Password: 
-                </td>
-                <td>
-                    <input type="password" data-th-field="*{password}">
-                </td>
-                <td>
-                    <span data-th-if="${#fields.hasErrors('password')}"
-                        data-th-errors="*{password}"
-                        data-th-errorclass="error"
-                    ></span>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Confirm Password: 
-                </td>
-                <td>
-                    <input type="password" data-th-field="*{confirmPassword}">
-                </td>
-                <td>
-                    <span data-th-if="${#fields.hasErrors('confirmPassword')}"
-                        data-th-errors="*{confirmPassword}"
-                        data-th-errorclass="error"
-                    ></span>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Email: 
-                </td>
-                <td>
-                    <input type="email" data-th-field="*{email}">
-                </td>
-                <td>
-                    <span data-th-if="${#fields.hasErrors('email')}"
-                        data-th-errors="*{email}"
-                        data-th-errorclass="error"
-                    ></span>
-                </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>
-                    <button type="submit">Sign Up</button>
-                </td>
-            </tr>
-        </table>
+        <img src="/logos/black_transparent.png" alt="Atom Logo" class="login-logo">
 
-        <div data-th-if="${#fields.hasErrors('global')}" data-th-each="err: ${#fields.errors('global')}">
-            <p data-th-text="${err}"></p>
-        </div>
+        <form class="auth-form-container" method="POST" action="/createaccount" data-th-object="${signUpForm}">
 
-    </form>
+            <input type="text" placeholder="Username" data-th-field="*{username}" class="auth-form-input ibm-plex-sans-regular">
+  
+            <span data-th-if="${#fields.hasErrors('username')}"
+                data-th-errors="*{username}"
+            ></span>
 
+            <input type="password" placeholder="Password" data-th-field="*{password}" class="auth-form-input ibm-plex-sans-regular">
+            
+
+            <span data-th-if="${#fields.hasErrors('password')}"
+                data-th-errors="*{password}"
+            ></span>
+
+            <input type="password" placeholder="Confirm Password" data-th-field="*{confirmPassword}" class="auth-form-input ibm-plex-sans-regular">
+            
+            <span data-th-if="${#fields.hasErrors('confirmPassword')}"
+                data-th-errors="*{confirmPassword}"
+            ></span>
+
+            <input type="email" placeholder="Email" data-th-field="*{email}" class="auth-form-input ibm-plex-sans-regular">
+            
+            <span data-th-if="${#fields.hasErrors('email')}"
+                data-th-errors="*{email}"
+            ></span>
+  
+            <button type="submit" class="auth-form-button ibm-plex-sans-regular">Sign Up</button>
 
     
+            <div data-th-if="${#fields.hasErrors('global')}" data-th-each="err: ${#fields.errors('global')}">
+                <p data-th-text="${err}"></p>
+            </div>
+
+            <p class="ibm-plex-sans-regular">Already a user? <a class="auth-link" href="/login">Log in</a></p>
+        </form>
+
+    </div>
+
 </body>
 </html>
