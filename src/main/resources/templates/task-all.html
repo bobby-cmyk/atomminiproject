@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All Tasks | AtomTask</title>
+    <title>All Tasks | Atom</title>
     <link rel='stylesheet' href="/css/reset.css">
     <link rel='stylesheet' href="/css/fonts.css">
     <link rel='stylesheet' href="/css/styles.css">
@@ -11,30 +11,28 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-bold-straight/css/uicons-bold-straight.css">
 </head>
 <body class="home-container">
 
-    <form method="POST" action="/logout">
-        <button type="submit">
-            Logout
-        </button>
-    </form>
+    <nav class="navbar">
 
-    <form method="GET" action="/">
-        <button type="submit">
-            Home
-        </button>
-    </form>
+        <img src="/logos/white_transparent.png" alt="Atom Logo" class="nav-logo">
 
-    <hr>
-
-    <form class="" method="GET" action="/task/new">
-        <button type="submit">
-            New Task
-        </button>
-    </form>
+        <form method="POST" action="/logout">
+            <button type="submit" class="logout-button ibm-plex-sans-medium">
+                Log out
+            </button>
+        </form>
+    </nav>
 
     <div class="tasks-container">
+
+        <form method="GET" action="/task/new">
+            <button class="new-task-button ibm-plex-sans-medium" type="submit">
+                <i class="fi fi-bs-plus new-task-icon"></i> New task
+            </button>
+        </form>
 
         <div class="task-card" data-th-each="task : ${tasks}" data-th-object="${task}">
 
@@ -51,14 +49,14 @@
                 <form method="GET" action="/task/edit"  class="edit-form">
                     <input type="hidden" name="taskId" data-th-value="*{id}">
                     <button type="submit" class="task-button edit-button">
-                        Edit
+                        <i class="fi fi-bs-pencil"></i>
                     </button>
                 </form>
 
                 <form method="POST" action="/task/delete" class="delete-form">
                     <input type="hidden" name="taskId" data-th-value="*{id}">
                     <button type="submit" class="task-button delete-button">
-                        Done
+                        <i class="fi fi-bs-check"></i>
                     </button>
                 </form>
                 

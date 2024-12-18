@@ -41,12 +41,12 @@ public class IndexController {
 
         //List<Task> tasks = taskSvc.getAllSortedTasks(user);
 
-        String schedule = "Hi aiken";
+        //String schedule = "Hi aiken";
         
         // taskSvc.getSchedule(tasks);
 
-        mav.addObject("schedule", schedule);
-        mav.setViewName("home");
+        //mav.addObject("schedule", schedule);
+        mav.setViewName("redirect:/task/all");
 
         return mav;
     }
