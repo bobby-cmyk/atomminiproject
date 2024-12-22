@@ -39,12 +39,12 @@ public class UserService implements UserDetailsService {
         user.setEmail(signUpForm.getEmail());
         user.setCreatedEpochTime(createdEpochTime);
         user.setRole("USER");
+        user.setCreateMethod("default");
 
         System.out.printf("\nUser: %s\n", user);
 
         userRepo.createUser(user);
     }
-    
 
     public boolean isEmailTaken(String email) {
         return userRepo.isEmailTaken(email);

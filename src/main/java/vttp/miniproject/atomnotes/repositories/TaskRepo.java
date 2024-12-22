@@ -20,6 +20,20 @@ public class TaskRepo {
     @Autowired @Qualifier("redisTemplate")
     private RedisTemplate<String, String> template;
 
+    private String TASK_IDS_PREFIX="userTaskIds:";
+    private String COMPLETED_TASK_IDS_PREFIX="userCompletedTaskIds:";
+    private String TASK_PREFIX="task:";
+    private String COMPLETED_TASK_PREFIX="completedTask:";
+
+    // Create task
+    // Complete task
+    // Update task
+    // Get all current tasks
+    // Get a current task
+    // Get all completed tasks
+    // Get a completed task
+    // Delete completed tasks
+
     // hgetall taskId
     public Task getTask(String taskId) {
 
@@ -89,5 +103,4 @@ public class TaskRepo {
         //Overwrite
         hashOps.putAll(taskId, values);
     }
-
 }

@@ -6,13 +6,11 @@
     overflow: hidden;
     background: #fff;
     color: #000;
-    font-family: 'IBM Plex Sans', sans-serif;
 }
 
 .image-container {
     flex: 3; 
     position: relative;
-    width: 60%;
 }
 
 .landing-image {
@@ -20,12 +18,10 @@
     height: 100%;
     object-fit: cover;
     object-position: center;
-    /* filter: grayscale(100%)*/
 }
 
 .auth-container {
     flex: 2;
-    width: 40%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -60,22 +56,47 @@
     border-radius: 16px;
     font-size: 1rem;
     cursor: pointer;
-    margin-top: 8px;
-    margin-bottom: 8px;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 .auth-form-button:hover {
     background-color: #d87e5c;
 }
 
-/* Error Handling */
-span[data-th-if] {
-    color: red;
-    font-size: 0.875rem;
-    margin-bottom: 0.5rem;
+.google-auth-form-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #000000;
+    color: #ffffff;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 16px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 8px;
+    margin-bottom: 8px;
 }
 
-/* Link Styles */
+.google-icon {
+    display: flex;
+    align-items: center;
+    padding-right: 8px;
+}
+  
+.google-icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+.auth-form-divider {
+    text-align: center;
+    margin: 1rem 0;
+    color: #666;
+    font-size: 0.875rem;
+}
+
 .auth-link {
     color: #000000;
     text-decoration: none;
@@ -86,7 +107,11 @@ span[data-th-if] {
     text-decoration: underline;
 }
 
-/* Responsive Design */
+.error-message {
+    color: #d87e5c;
+    font-size: 0.8rem;
+}
+
 @media screen and (max-width: 768px) {
     .landing-container {
         flex-direction: column;
@@ -118,12 +143,6 @@ span[data-th-if] {
         content: url('/logos/white_transparent.png'); /* Switch to white logo */
     }
     
-    .auth-form-container {
-        background-color: rgba(0,0,0,0.3); /* Slightly darker form background */
-        padding: 2rem;
-        border-radius: 10px;
-    }
-    
     .auth-form-input {
         background-color: rgba(255,255,255,0.1);
         border: 1px solid rgba(255,255,255,0.3);
@@ -147,6 +166,15 @@ span[data-th-if] {
     .auth-link {
         color: white;
         font-weight: bold;
+    }
+
+    .google-auth-form-button {
+        background-color: #ffffff;
+        color: #000000;
+    }
+
+    .auth-form-divider {
+        color: #fff;
     }
 }
 
@@ -337,7 +365,3 @@ span[data-th-if] {
     background-color: transparent;
 }
 
-.error-message {
-    color: #d87e5c;
-    font-size: 0.8rem;
-}

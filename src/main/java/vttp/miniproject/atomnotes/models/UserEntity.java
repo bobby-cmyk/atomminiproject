@@ -21,6 +21,7 @@ public class UserEntity implements UserDetails {
     private String password;
     private String email;
     private String role;
+    private String createMethod;
 
     public String getId() {return id;}
     public void setId(String id) {this.id = id;}
@@ -39,6 +40,9 @@ public class UserEntity implements UserDetails {
 
     public String getRole() {return role;}
     public void setRole(String role) {this.role = role;}
+
+    public String getCreateMethod() {return createMethod;}
+    public void setCreateMethod(String createMethod) {this.createMethod = createMethod;}
 
     public LocalDateTime getCreatedDateTime() {
         Instant instant = Instant.ofEpochMilli(createdEpochTime);

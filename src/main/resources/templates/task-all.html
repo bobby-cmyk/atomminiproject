@@ -15,54 +15,72 @@
 </head>
 <body class="home-container">
 
-    <nav class="navbar">
-
-        <img src="/logos/white_transparent.png" alt="Atom Logo" class="nav-logo">
-
-        <form method="POST" action="/logout">
-            <button type="submit" class="logout-button ibm-plex-sans-medium">
-                Log out
-            </button>
-        </form>
-    </nav>
-
+    <div data-th-insert="navbar :: navbar"></div>
+    <!--
     <div class="tasks-container">
-
-        <form method="GET" action="/task/new">
-            <button class="new-task-button ibm-plex-sans-medium" type="submit">
-                <i class="fi fi-bs-plus new-task-icon"></i> New task
+        <form 
+            method="GET" 
+            action="/task/new">
+            <button 
+                type="submit"
+                class="new-task-button ibm-plex-sans-medium">
+                <i class="fi fi-bs-plus new-task-icon"></i> 
+                New task
             </button>
         </form>
 
-        <div class="task-card" data-th-each="task : ${tasks}" data-th-object="${task}">
+        <div 
+            class="task-card" 
+            data-th-each="task : ${tasks}" 
+            data-th-object="${task}">
 
-            <p class="task-content libre-baskerville-regular" data-th-text="*{content}"></p>
+            <p class="task-content libre-baskerville-regular" 
+                data-th-text="*{content}"></p>
 
             <div class="subtasks-container ibm-plex-sans-light">
-                <p class="subtask-content" data-th-each="subtask : *{subtasks}" data-th-text="${subtask}"></p>
+                <p class="subtask-content" 
+                    data-th-each="subtask : *{subtasks}" 
+                    data-th-text="${subtask}">
+                </p>
             </div>
 
-            <img class="task-image" data-th-src="*{imageUrl}">
+            <img class="task-image" 
+                data-th-src="*{imageUrl}">
 
             <div class="task-buttons-container">
 
-                <form method="GET" action="/task/edit"  class="edit-form">
-                    <input type="hidden" name="taskId" data-th-value="*{id}">
-                    <button type="submit" class="task-button edit-button">
+                <form 
+                    method="GET"
+                    action="/task/edit"
+                    class="edit-form">
+                    <input 
+                        type="hidden" 
+                        name="taskId" 
+                        data-th-value="*{id}">
+                    <button 
+                        type="submit" 
+                        class="task-button edit-button">
                         <i class="fi fi-bs-pencil"></i>
                     </button>
                 </form>
 
-                <form method="POST" action="/task/delete" class="delete-form">
-                    <input type="hidden" name="taskId" data-th-value="*{id}">
-                    <button type="submit" class="task-button delete-button">
+                <form 
+                    method="POST" 
+                    action="/task/delete" 
+                    class="delete-form">
+                    <input 
+                        type="hidden" 
+                        name="taskId" 
+                        data-th-value="*{id}">
+                    <button 
+                        type="submit" 
+                        class="task-button delete-button">
                         <i class="fi fi-bs-check"></i>
                     </button>
                 </form>
-                
             </div>
         </div>
     </div>
-
+    -->
 </body>
 </html>

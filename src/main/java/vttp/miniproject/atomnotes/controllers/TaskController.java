@@ -33,13 +33,8 @@ public class TaskController {
     private GenService genSvc;
 
     @GetMapping("/all")
-    public ModelAndView getHome(
-        HttpSession sess
-    ) 
-    {
+    public ModelAndView getHome() {
         ModelAndView mav = new ModelAndView();
-
-        String user = sess.getAttribute("user").toString();
 
         List<Task> tasks = taskSvc.getAllSortedTasks(user);
 
@@ -64,7 +59,7 @@ public class TaskController {
 
             return mav;
         }
-        
+
         Task task = new Task();
         
         logger.info("Creating new task");

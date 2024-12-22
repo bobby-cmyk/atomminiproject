@@ -25,21 +25,22 @@ public class Task {
 
     private List<String> subtasks = new ArrayList<>();
 
-    public String getId() {
-        return id;
-    }
-    
-    public void setId(String id) {
-        this.id = id;
-    }
+    public String getId() {return id;}
+    public void setId(String id) {this.id = id;}
 
-    public long getAddedEpochTime() {
-        return addedEpochTime;
-    }
+    public long getAddedEpochTime() {return addedEpochTime;}
+    public void setAddedEpochTime(long addedEpochTime) {this.addedEpochTime = addedEpochTime;}
 
-    public void setAddedEpochTime(long addedEpochTime) {
-        this.addedEpochTime = addedEpochTime;
-    }
+    public String getImageUrl() {return imageUrl;}
+    public void setImageUrl(String imageUrl) {this.imageUrl = imageUrl;}
+
+    public String getContent() {return content;}
+    public void setContent(String content) {this.content = content;}
+
+    public List<String> getSubtasks() {return subtasks;}
+    public void setSubtasks(List<String> subtasks) {this.subtasks = subtasks;}
+
+    public void addSubtask(String subtask) {subtasks.add(subtask);}
 
     public String getAddedDateTime() {
         
@@ -51,50 +52,6 @@ public class Task {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE, h:mma, d MMM yyyy", java.util.Locale.ENGLISH);
         
         return localDateTime.format(formatter);
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public String getContent() {
-        return content;
-    }
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public List<String> getSubtasks() {
-        return subtasks;
-    }
-
-    public String getSubtasksString() {
-
-        String subtasksString = "";
-
-        if (subtasks.isEmpty()) {
-            return subtasksString;
-        }
-
-        for (String subtask : subtasks) {
-            subtasksString += subtask + "|";
-        }
-
-        subtasksString = subtasksString.substring(0, subtasksString.length() - 1);
-
-        return subtasksString;
-    }
-
-    public void setSubtasks(List<String> subtasks) {
-        this.subtasks = subtasks;
-    }
-
-    public void addSubtask(String subtask) {
-        subtasks.add(subtask);
     }
     
     public static Task mapToTask(Map<String, String> taskMap) {
@@ -115,6 +72,32 @@ public class Task {
         return task;
     }
 
+    public JsonObject getTaskJsonObject() {
+        
+        JsonObject object = Json.createObjectBuilder()
+            .add("added_datetime", getAddedDateTime())
+            .add("content", getContent())
+            .build();
+
+        return object;
+    }
+
+    public String getSubtasksString() {
+
+        String subtasksString = "";
+
+        if (subtasks.isEmpty()) {
+            return subtasksString;
+        }
+
+        for (String subtask : subtasks) {
+            subtasksString += subtask + "|";
+        }
+
+        subtasksString = subtasksString.substring(0, subtasksString.length() - 1);
+
+        return subtasksString;
+    }
 
     public static List<String> subtasksStringToList(String subtasksString) {
         
@@ -138,15 +121,5 @@ public class Task {
     public String toString() {
         return "Task [id=" + id + ", addedEpochTime=" + addedEpochTime + ", content=" + content + ", subtasks="
                 + subtasks + "]";
-    }
-
-    public JsonObject getTaskJsonObject() {
-        
-        JsonObject object = Json.createObjectBuilder()
-            .add("added_datetime", getAddedDateTime())
-            .add("content", getContent())
-            .build();
-
-        return object;
     }
 }
