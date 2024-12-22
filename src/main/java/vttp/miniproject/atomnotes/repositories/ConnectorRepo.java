@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class ConnectorRepo {
     
-    @Autowired @Qualifier("redisTemplate3")
+    @Autowired @Qualifier("redisTemplate")
     private RedisTemplate<String, String> template;
 
     // smembers username taskId

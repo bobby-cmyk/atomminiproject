@@ -20,7 +20,7 @@
     height: 100%;
     object-fit: cover;
     object-position: center;
-    filter: grayscale(100%)
+    /* filter: grayscale(100%)*/
 }
 
 .auth-container {
@@ -46,7 +46,7 @@
 }
 
 .auth-form-input {
-    margin-bottom: 1rem;
+    margin-top: 1rem;
     padding: 0.75rem;
     border: 1px solid #e0e0e0;
     border-radius: 4px;
@@ -60,6 +60,7 @@
     border-radius: 16px;
     font-size: 1rem;
     cursor: pointer;
+    margin-top: 8px;
     margin-bottom: 8px;
 }
 
@@ -104,7 +105,7 @@ span[data-th-if] {
     }
     
     .landing-image {
-        filter: grayscale(100%) brightness(0.5); /* Darken the background image */
+        filter: /*grayscale(100%)*/ brightness(0.5);
     }
     
     .auth-container {
@@ -335,38 +336,8 @@ span[data-th-if] {
     resize: none;
     background-color: transparent;
 }
-/*
 
-<div class="tasks-container">
-
-        <div class="task-card" data-th-each="task : ${tasks}" data-th-object="${task}">
-
-            <p class="task-content" data-th-text="*{content}"></p>
-
-            <img class="task-image" data-th-src="*{imageUrl}">
-
-            <div class="subtasks-container">
-                <p class="subtask-content" data-th-each="subtask : *{subtasks}" data-th-text="${subtask}"></p>
-            </div>
-
-            <div class="task-buttons-container">
-
-                <form method="GET" action="/task/edit">
-                    <input type="hidden" name="taskId" data-th-value="*{id}">
-                    <button type="submit">
-                        Edit
-                    </button>
-                </form>
-
-                <form method="POST" action="/task/delete">
-                    <input type="hidden" name="taskId" data-th-value="*{id}">
-                    <button type="submit">
-                        Done
-                    </button>
-                </form>
-                
-            </div>
-        </div>
-    </div>
-    
-*/
+.error-message {
+    color: #d87e5c;
+    font-size: 0.8rem;
+}

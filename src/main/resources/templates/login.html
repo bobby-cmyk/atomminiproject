@@ -15,37 +15,61 @@
 <body class="landing-container">
 
     <div class="image-container">
-        <img class="landing-image" src="https://images.unsplash.com/photo-1417325384643-aac51acc9e5d?q=75&fm=jpg&w=1080&fit=max">
+        <img 
+            class="landing-image" 
+            src="https://images.unsplash.com/photo-1417325384643-aac51acc9e5d?q=75&fm=jpg&w=1080&fit=max">
     </div>
         
-
     <div class="auth-container">
 
-        <img src="/logos/black_transparent.png" alt="Atom Logo" class="login-logo">
+        <img 
+            class="login-logo"
+            src="/logos/black_transparent.png"
+            alt="Atom Logo">
 
-        <form class="auth-form-container" method="POST" action="/auth" data-th-object="${loginForm}">
+        <form 
+            method="POST" 
+            action="/login"
+            class="auth-form-container">
 
-            <input type="text" placeholder="Username" data-th-field="*{username}" class="auth-form-input ibm-plex-sans-regular">
+            <input 
+                type="hidden" 
+                data-th-name="${_csrf.parameterName}" 
+                data-th-value="${_csrf.token}">
 
-            <span data-th-if="${#fields.hasErrors('username')}"
-                data-th-errors="*{username}"
-            ></span>
+            <input 
+                type="text" 
+                name="username" 
+                class="auth-form-input ibm-plex-sans-regular" 
+                placeholder="Username or Email">
 
-            <input type="password" placeholder="Password" data-th-field="*{password}" class="auth-form-input ibm-plex-sans-regular">
+            <input 
+                type="password" 
+                name="password"
+                class="auth-form-input ibm-plex-sans-regular"
+                placeholder="Password">
 
-            <span data-th-if="${#fields.hasErrors('password')}"
-                data-th-errors="*{password}"
-            ></span>
-  
+            <button 
+                type="submit" 
+                class="auth-form-button ibm-plex-sans-medium">
+                Log In
+            </button>
 
-            <button type="submit" class="auth-form-button ibm-plex-sans-medium">Log In</button>
-
-    
-            <div data-th-if="${#fields.hasErrors('global')}" data-th-each="err: ${#fields.errors('global')}">
-                <p data-th-text="${err}"></p>
+            <div 
+                data-th-if="${param.error}"
+                class="error-message ibm-plex-sans-regular">
+                <p>
+                    Invalid credentials. Please try again.
+                </p>
             </div>
 
-            <p class="ibm-plex-sans-regular">No account yet? <a class="auth-link" href="/signup">Sign up</a></p>
+            <p class="ibm-plex-sans-regular">
+                No account yet? 
+                <a class="auth-link"
+                    href="/signup">
+                    Sign up
+                </a>
+            </p>
         </form>
 
     </div>

@@ -3,20 +3,26 @@ package vttp.miniproject.atomnotes.models;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 public class SignUpForm {
 
     @NotEmpty(message="Username cannot be empty")
+    @Size(message="Minimum 5 and maximum 10 characters", 
+        min=5, max=6)
     private String username;
 
     @NotEmpty(message="Password cannot be empty")
+    @Pattern(message="Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character", 
+        regexp="^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")
     private String password;
 
     @NotNull(message="Passwords do not match")
     private String confirmPassword;
-    
-    //@NotEmpty(message = "Email cannot be empty")
-    @Email(message = "Email is not valid", regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")
+
+    @Email(message = "Email is not valid", 
+        regexp="^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")
     private String email;
 
     @Override

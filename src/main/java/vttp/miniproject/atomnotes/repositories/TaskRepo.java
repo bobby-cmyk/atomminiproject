@@ -17,7 +17,7 @@ import vttp.miniproject.atomnotes.models.Task;
 @Repository
 public class TaskRepo {
     
-    @Autowired @Qualifier("redisTemplate2")
+    @Autowired @Qualifier("redisTemplate")
     private RedisTemplate<String, String> template;
 
     // hgetall taskId

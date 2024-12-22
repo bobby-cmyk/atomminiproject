@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.servlet.ModelAndView;
 
 import jakarta.servlet.http.HttpSession;
@@ -40,17 +39,6 @@ public class TaskController {
     {
         ModelAndView mav = new ModelAndView();
 
-        // TODO Consider using SecurityFilterChain
-        // Redirect to login page if user is not logged in
-        if (sess.getAttribute("user") == null) {
-
-            logger.info("Unauthenticated vistor. Redirected to login page.");
-
-            mav.setViewName("redirect:/login");
-
-            return mav;
-        }
-
         String user = sess.getAttribute("user").toString();
 
         List<Task> tasks = taskSvc.getAllSortedTasks(user);
@@ -76,8 +64,7 @@ public class TaskController {
 
             return mav;
         }
-
-        // Initialise new task
+        
         Task task = new Task();
         
         logger.info("Creating new task");
@@ -121,7 +108,6 @@ public class TaskController {
     }
 
     
-
     @PostMapping("/delete")
     public ModelAndView deleteTask(
         HttpSession sess,
@@ -139,7 +125,6 @@ public class TaskController {
         logger.info("User: %s deleted a task id: %s".formatted(user, taskId));
 
         mav.setViewName("redirect:/task/all");
-
 
         return mav;
     }

@@ -10,6 +10,8 @@ import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class AppConfig {
@@ -28,30 +30,14 @@ public class AppConfig {
     @Value("${spring.data.redis.password}")
     private String redisPassword;
 
-    @Value("${spring.data.redis.database1}")
-    private int redisDatabase1;
+    @Value("${spring.data.redis.database}")
+    private int redisDatabase;
 
-    @Value("${spring.data.redis.database2}")
-    private int redisDatabase2;
-
-    @Value("${spring.data.redis.database3}")
-    private int redisDatabase3;
-
-    @Bean("redisTemplate1")
-    public RedisTemplate<String, String> createRedisTemplate1() {
-        return createRedisTemplate(redisDatabase1);
+    @Bean("redisTemplate")
+    public RedisTemplate<String, String> createRedisTemplate() {
+        return createRedisTemplate(redisDatabase);
     }
 
-    @Bean("redisTemplate2")
-    public RedisTemplate<String, String> createRedisTemplate2() {
-        return createRedisTemplate(redisDatabase2);
-    }
-
-    @Bean("redisTemplate3")
-    public RedisTemplate<String, String> createRedisTemplate3() {
-        return createRedisTemplate(redisDatabase3);
-    }
-    
     // Give it a name that we can call
     // Could also create a constant
     private RedisTemplate<String, String> createRedisTemplate(int database) {
@@ -77,9 +63,15 @@ public class AppConfig {
         RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(jedisFac);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new StringRedisSerializer());
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
         redisTemplate.setHashValueSerializer(new StringRedisSerializer());
 
         return redisTemplate;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
