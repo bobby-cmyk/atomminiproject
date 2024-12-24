@@ -88,7 +88,7 @@ public class TaskController {
         // Syntax validation for task form
         if (bindings.hasErrors()) {
 
-            mav.setViewName("task");
+            mav.setViewName("task-new");
 
             return mav;
         }
@@ -214,7 +214,7 @@ public class TaskController {
         // Syntax validation for task form
         if (bindings.hasErrors()) {
 
-            mav.setViewName("task");
+            mav.setViewName("task-edit");
 
             return mav;
         }

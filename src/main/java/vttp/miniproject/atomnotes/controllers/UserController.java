@@ -68,7 +68,7 @@ public class UserController {
 
         if (bindings.hasErrors()) {
 
-            logger.info("Invalid sign up form submitted: %s".formatted(signUpForm));
+            logger.info("Invalid sign up form submitted");
 
             mav.setViewName("signup");
 

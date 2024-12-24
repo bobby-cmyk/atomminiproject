@@ -42,8 +42,6 @@ public class UserService implements UserDetailsService {
         user.setRole("USER");
         user.setCreateMethod("default");
 
-        System.out.printf("\nUser: %s\n", user);
-
         userRepo.createUser(user);
     }
 

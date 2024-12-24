@@ -23,7 +23,8 @@ public class SecurityConfig {
                             "/oauth2/authorization/**",
                             "/login/oauth2/**",
                             "/css/**", 
-                            "/logos/**")
+                            "/logos/**",
+                            "/favicon/**")
                             .permitAll();
                         authorizeHttp.anyRequest().authenticated();
                     }

@@ -32,6 +32,8 @@ public class GenService {
     private final Logger logger = Logger.getLogger(GenService.class.getName());
 
     public String retrieveImageUrl(String content) {
+
+        String imageUrl = "";
         
         String base_url = "https://api.unsplash.com/search/photos";
 
@@ -53,8 +55,6 @@ public class GenService {
             .build();
         
         RestTemplate template = new RestTemplate();
-
-        String imageUrl = "";
 
         try {
             ResponseEntity<String> resp = template.exchange(req, String.class);
@@ -79,11 +79,15 @@ public class GenService {
 
             int imageIndex = rand.nextInt(bound);
 
-            JsonObject resultObj = resultsArr.getJsonObject(rand.nextInt(imageIndex));
+            JsonObject resultObj = resultsArr.getJsonObject(imageIndex);
 
             JsonObject urlsObj = resultObj.getJsonObject("urls");
 
             imageUrl = urlsObj.getString("regular");
+
+            if (imageUrl.isEmpty()) {
+                imageUrl = "https://images.unsplash.com/photo-1672237020985-2e38261617f9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w2ODQxMjd8MHwxfHNlYXJjaHwzfHxzdW5zZXQlMjBtb3VudGFpbnxlbnwwfHx8fDE3MzUwMjQxMjB8MA&ixlib=rb-4.0.3&q=80&w=1080";
+            }
 
             return imageUrl;
         }
@@ -91,6 +95,8 @@ public class GenService {
         catch (Exception e) {
             logger.info("Error: %s".formatted(e.getMessage()));
 
+            imageUrl = "https://images.unsplash.com/photo-1672237020985-2e38261617f9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w2ODQxMjd8MHwxfHNlYXJjaHwzfHxzdW5zZXQlMjBtb3VudGFpbnxlbnwwfHx8fDE3MzUwMjQxMjB8MA&ixlib=rb-4.0.3&q=80&w=1080";
+            
             return imageUrl;
         }
     }
@@ -150,7 +156,8 @@ public class GenService {
         }
 
         catch (Exception e) {
-            //TODO if exception try again
+
+            mainTopic = "sunset mountain";
 
             logger.info("Error occured: %s.".formatted(e.getMessage()));
             return mainTopic;
@@ -218,7 +225,9 @@ public class GenService {
         }
 
         catch (Exception e) {
-            //TODO if exception try again
+            subtasks.add("Subtask 1");
+            subtasks.add("Subtask 2");
+            subtasks.add("Subtask 3");
 
             logger.info("Error occured: %s.".formatted(e.getMessage()));
             return subtasks;

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 
 public class Task {
 
@@ -16,7 +16,7 @@ public class Task {
 
     private String imageUrl;
 
-    @NotEmpty(message = "Task cannot be empty")
+    @NotBlank(message = "Task cannot be empty")
     private String content;
 
     private List<String> subtasks = new ArrayList<>();
