@@ -9,17 +9,13 @@ import jakarta.validation.constraints.NotBlank;
 public class Task {
 
     private String id;
-
     private long createdTime;
-
     private long lastUpdatedTime;
-
     private String imageUrl;
+    private List<String> subtasks = new ArrayList<>();
 
     @NotBlank(message = "Task cannot be empty")
     private String content;
-
-    private List<String> subtasks = new ArrayList<>();
 
     public String getId() {return id;}
     public void setId(String id) {this.id = id;}
@@ -81,12 +77,15 @@ public class Task {
         
         List<String> subtasks = new ArrayList<>();
 
-        // if no subtasks submitted
-        if (subtasksString.isEmpty()) {
-            return subtasks;
-        }
-        
         String[] subtasksParts = subtasksString.split("\\|");
+
+        // If substasks string from gpt is wrong
+        if (subtasksParts.length != 3) {
+            subtasks.add("Subtask 1");
+            subtasks.add("Subtask 2");
+            subtasks.add("Subtask 3");
+            return subtasks;
+        } 
 
         for (int i = 0; i < subtasksParts.length; i++) {
             subtasks.add(subtasksParts[i]);

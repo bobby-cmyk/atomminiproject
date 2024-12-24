@@ -59,10 +59,23 @@ public class TaskController {
     }
 
     @GetMapping("/new")
-    public ModelAndView getCreateTaskForm() 
+    public ModelAndView getCreateTaskForm(
+        @AuthenticationPrincipal AuthUserDetails authUser,
+        @AuthenticationPrincipal OAuth2User oAuth2User
+    ) 
     {
         ModelAndView mav = new ModelAndView();
         
+        String userId = getUserId(authUser, oAuth2User);
+
+        // Max 10 current task, redirect to all if more than that
+        if (taskSvc.numberOfTasks(userId) >= 10) {
+
+            mav.setViewName("redirect:/task/all");
+
+            return mav;
+        }
+
         Task task = new Task();
         
         logger.info("Creating new task");

@@ -232,7 +232,7 @@
     pointer-events: none; /* Ensures underlying image is still clickable */
 }
 
-.task-button {
+.circle-button {
     width: 60px;
     height: 60px;
     border-radius: 50%;
@@ -280,7 +280,7 @@
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Slightly larger shadow on hover */
 }
 
-.new-task-button {
+.task-button {
     background-color: #000000;
     color: #ffffff;
     border: none;
@@ -297,6 +297,11 @@
     line-height: 1;
 }
 
+.generate-button {
+    background-color: #ffffff;
+    color: #000000;
+}
+
 .new-task-icon {
     font-size: 0.8rem;
     margin-right: 6px;
@@ -304,7 +309,7 @@
     top: 1px;
 }
 
-.new-task-button:hover {
+.task-button:hover {
     background-color: #d87e5c;
     color: #fff;
 }
@@ -378,11 +383,22 @@
     margin-bottom: 24px;
 }
 
+a:has(.stat-container) {  
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+a:has(.stat-container):hover {
+  background-color: #d87e5c;
+  color: #ffffff;
+}
+
 .stat-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 16px;
 }
 
 .stat {
@@ -394,3 +410,20 @@
 .stat-number {
     font-size: 2rem;
 }
+
+.limit-card {
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 24px;
+    padding: 16px;
+}
+
+.max-limit-card {
+    background-color: #d87e5c;
+    color: #ffffff;
+}
+
+

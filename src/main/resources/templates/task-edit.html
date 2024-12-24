@@ -8,7 +8,6 @@
     <link rel='stylesheet' href="/css/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-bold-straight/css/uicons-bold-straight.css">
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
@@ -50,7 +49,8 @@
                 data-th-field="*{imageUrl}">
 
             <button 
-                class="new-task-button ibm-plex-sans-medium" type="submit" 
+                class="task-button ibm-plex-sans-medium" 
+                type="submit" 
                 formaction="/task/edit">
                 
                 <i class="fi fi-bs-plus new-task-icon"></i> 
@@ -61,7 +61,6 @@
             
             <div class="task-card">
                 <textarea 
-                    type="text" 
                     class="task-content-input libre-baskerville-regular"
                     data-th-value="*{content}" 
                     data-th-field="*{content}"
@@ -80,7 +79,7 @@
             <button 
                 type="submit" 
                 formaction="/task/regenerate"
-                class="new-task-button ibm-plex-sans-medium">
+                class="task-button generate-button ibm-plex-sans-medium">
                 Generate sub-tasks
             </button>
 

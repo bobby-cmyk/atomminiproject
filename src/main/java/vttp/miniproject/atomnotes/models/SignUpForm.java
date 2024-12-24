@@ -9,8 +9,8 @@ import jakarta.validation.constraints.Size;
 public class SignUpForm {
 
     @NotBlank(message="Username cannot be empty")
-    @Size(message="Minimum 5 and maximum 10 characters", 
-        min=5, max=6)
+    @Size(message="Minimum 5 and maximum 15 characters", 
+        min=5, max=15)
     private String username;
 
     @NotBlank(message="Password cannot be empty")
