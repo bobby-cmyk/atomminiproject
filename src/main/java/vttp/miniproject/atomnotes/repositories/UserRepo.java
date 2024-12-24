@@ -33,7 +33,7 @@ public class UserRepo {
         // Add user details into a redis hash 
         Map<String, String> values = new HashMap<>();
         values.put("id", user.getId());
-        values.put("createdEpochTime", String.valueOf(user.getCreatedEpochTime()));
+        values.put("createdTime", String.valueOf(user.getCreatedTime()));
         values.put("email", user.getEmail());
         values.put("username", user.getUsername());
         values.put("password", user.getPassword());

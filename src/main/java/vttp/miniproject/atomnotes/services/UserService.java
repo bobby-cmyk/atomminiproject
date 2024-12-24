@@ -1,16 +1,17 @@
 package vttp.miniproject.atomnotes.services;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import vttp.miniproject.atomnotes.models.AuthUserDetails;
 import vttp.miniproject.atomnotes.models.SignUpForm;
 import vttp.miniproject.atomnotes.models.UserEntity;
 import vttp.miniproject.atomnotes.repositories.UserRepo;
@@ -30,14 +31,14 @@ public class UserService implements UserDetailsService {
 
         // Generate a unique id for user
         String id = UUID.randomUUID().toString();
-        long createdEpochTime = Instant.now().toEpochMilli();
+        long createdTime = Instant.now().toEpochMilli();
 
         // Set information for user;
         user.setId(id);
         user.setUsername(signUpForm.getUsername());
         user.setPassword(passwordEncoder.encode(signUpForm.getPassword()));
         user.setEmail(signUpForm.getEmail());
-        user.setCreatedEpochTime(createdEpochTime);
+        user.setCreatedTime(createdTime);
         user.setRole("USER");
         user.setCreateMethod("default");
 
@@ -75,10 +76,10 @@ public class UserService implements UserDetailsService {
 
         UserEntity user = userRepo.getUserEntity(userId);
 
-        return User
-            .withUsername(user.getUsername())
-            .password(user.getPassword())
-            .roles(user.getRole())
-            .build();
+        return new AuthUserDetails(
+            user.getId(),
+            user.getUsername(),
+            user.getPassword(),  
+            List.of(() -> "ROLE_" + user.getRole()));
     }
 }

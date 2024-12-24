@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Task | Atom</title>
     <link rel='stylesheet' href="/css/reset.css">
     <link rel='stylesheet' href="/css/fonts.css">
     <link rel='stylesheet' href="/css/styles.css">
@@ -12,46 +11,71 @@
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-bold-straight/css/uicons-bold-straight.css">
+    <link rel="icon" type="image/x-icon" href="/logos/black_transparent_square.png">
+    <title>New Task | Atom</title>
 </head>
 <body class="home-container">
 
-    <nav class="navbar">
-
-        <img src="/logos/white_transparent.png" alt="Atom Logo" class="nav-logo">
-
-        <form method="POST" action="/logout">
-            <button type="submit" class="logout-button ibm-plex-sans-medium">
-                Log out
-            </button>
-        </form>
-    </nav>
+    <div data-th-replace="~{navbar :: navbar}"></div>
 
     <div class="tasks-container">
-        <form method="POST" data-th-object="${task}">
+        
+        <form 
+            method="POST" 
+            data-th-object="${task}">
 
-            <button class="new-task-button ibm-plex-sans-medium" type="submit" formaction="/task/add">
-                <i class="fi fi-bs-plus new-task-icon"></i> Add task
+            <input 
+                type="hidden" 
+                data-th-name="${_csrf.parameterName}" 
+                data-th-value="${_csrf.token}">
+
+            <button 
+                type="submit" 
+                formaction="/task/new"
+                class="new-task-button ibm-plex-sans-medium">
+
+                <i class="fi fi-bs-plus new-task-icon"></i>
+                
+                Add task
             </button>
             
             <div class="task-card">
-                <textarea class="task-content-input libre-baskerville-regular" type="text" placeholder="Your task here..." autocomplete="off" data-th-field="*{content}" rows="3">
+                <textarea 
+                    type="text"
+                    class="task-content-input libre-baskerville-regular"  
+                    data-th-field="*{content}"
+                    placeholder="Your task here..." 
+                    autocomplete="off"
+                    rows="3">
                 </textarea>
-                <span data-th-if="*{#fields.hasErrors('content')}"
-                data-th-errors="*{content}"
-                ></span>
+
+                <span 
+                    data-th-if="*{#fields.hasErrors('content')}"
+                    data-th-errors="*{content}"
+                    class="task-empty-messsage ibm-plex-sans-light">
+                </span>
             </div>
 
-                <button class="new-task-button ibm-plex-sans-medium" 
-                    type="submit" formaction="/task/new/gensubtasks">
-                    Generate sub-tasks
-                </button>
+            <button 
+                type="submit" 
+                formaction="/task/generate"
+                class="new-task-button ibm-plex-sans-medium">
+
+                Generate sub-tasks
+            </button>
 
             <div class="task-card">
-                <div data-th-if="*{not #lists.isEmpty(subtasks)}" data-th-each="subtask, subtaskStat : *{subtasks}" class="subtasks-container ibm-plex-sans-light">
-                    <input class="subtask-content-input" 
-                        type="text" autocomplete="off" 
+                <div 
+                    class="subtasks-container ibm-plex-sans-light"
+                    data-th-if="*{not #lists.isEmpty(subtasks)}" 
+                    data-th-each="subtask, subtaskStat : *{subtasks}">
+
+                    <input 
+                        type="text"
+                        class="subtask-content-input"
                         data-th-field="*{subtasks[__${subtaskStat.index}__]}" 
-                        data-th-value="${subtask}">
+                        data-th-value="${subtask}"
+                        autocomplete="off">
                 </div>
             </div>
         </form>

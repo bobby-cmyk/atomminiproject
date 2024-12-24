@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All Tasks | Atom</title>
     <link rel='stylesheet' href="/css/reset.css">
     <link rel='stylesheet' href="/css/fonts.css">
     <link rel='stylesheet' href="/css/styles.css">
@@ -12,12 +11,45 @@
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-bold-straight/css/uicons-bold-straight.css">
+    <link rel="icon" type="image/x-icon" href="/logos/black_transparent_square.png">
+    <title>All Tasks | Atom</title>
 </head>
 <body class="home-container">
 
-    <div data-th-insert="navbar :: navbar"></div>
-    <!--
+    <div data-th-replace="~{navbar :: navbar}"></div>
+
     <div class="tasks-container">
+
+        <div class="stat-card">
+
+            <div class="stat-container">
+                <div class="stat">
+                    <p 
+                        data-th-text="${numberOfTasks}"
+                        class="stat-number">
+                    </p>
+                    <p class="ibm-plex-sans-thin">Current Tasks</p>
+                </div>
+
+                <div class="stat">
+                    <p 
+                        data-th-text="${numberOfCompletedTasks}"
+                        class="stat-number">
+                    </p>
+                    <p class="ibm-plex-sans-thin">Completed Tasks</p>
+                </div>
+            </div>
+
+            <!--
+            <div class="stats-link">
+                <a href="/stats">
+                    View your stats
+                </a>
+            </div>
+            -->
+
+        </div>
+        
         <form 
             method="GET" 
             action="/task/new">
@@ -66,8 +98,12 @@
 
                 <form 
                     method="POST" 
-                    action="/task/delete" 
+                    action="/task/complete" 
                     class="delete-form">
+                    <input 
+                        type="hidden" 
+                        data-th-name="${_csrf.parameterName}" 
+                        data-th-value="${_csrf.token}">
                     <input 
                         type="hidden" 
                         name="taskId" 
@@ -81,6 +117,6 @@
             </div>
         </div>
     </div>
-    -->
+
 </body>
 </html>

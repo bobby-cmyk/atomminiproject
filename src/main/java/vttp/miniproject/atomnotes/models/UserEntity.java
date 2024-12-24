@@ -1,8 +1,5 @@
 package vttp.miniproject.atomnotes.models;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -16,7 +13,7 @@ public class UserEntity implements UserDetails {
 
     @Id
     private String id;
-    private long createdEpochTime;
+    private long createdTime;
     private String username;
     private String password;
     private String email;
@@ -26,8 +23,8 @@ public class UserEntity implements UserDetails {
     public String getId() {return id;}
     public void setId(String id) {this.id = id;}
 
-    public long getCreatedEpochTime() {return createdEpochTime;}
-    public void setCreatedEpochTime(long createdEpochTime) {this.createdEpochTime = createdEpochTime;}
+    public long getCreatedTime() {return createdTime;}
+    public void setCreatedTime(long createdTime) {this.createdTime = createdTime;}
 
     public String getUsername() {return username;}
     public void setUsername(String username) {this.username = username;}
@@ -44,18 +41,11 @@ public class UserEntity implements UserDetails {
     public String getCreateMethod() {return createMethod;}
     public void setCreateMethod(String createMethod) {this.createMethod = createMethod;}
 
-    public LocalDateTime getCreatedDateTime() {
-        Instant instant = Instant.ofEpochMilli(createdEpochTime);
-        ZoneId zoneId = ZoneId.systemDefault();
-        LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
-        return localDateTime;
-    }
-
     public static UserEntity mapToUserEntity(Map<Object, Object> userMap) {
         UserEntity user = new UserEntity();
 
         user.setId(null);
-        user.setCreatedEpochTime(Long.parseLong((String) userMap.get("createdEpochTime")));
+        user.setCreatedTime(Long.parseLong((String) userMap.get("createdTime")));
         user.setUsername((String) userMap.get("username"));
         user.setPassword((String) userMap.get("password"));
         user.setEmail((String) userMap.get("email"));
@@ -83,7 +73,16 @@ public class UserEntity implements UserDetails {
 
     @Override
     public String toString() {
-        return "UserEntity [id=" + id + ", createdEpochTime=" + createdEpochTime + ", username=" + username
+        return "UserEntity [id=" + id + ", createdTime=" + createdTime + ", username=" + username
                 + ", password=" + password + ", email=" + email + ", role=" + role + "]";
     }
 }
+
+    /*
+    public LocalDateTime getCreatedDateTime() {
+        Instant instant = Instant.ofEpochMilli(createdTime);
+        ZoneId zoneId = ZoneId.systemDefault();
+        LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
+        return localDateTime;
+    }
+    */

@@ -1,22 +1,18 @@
 package vttp.miniproject.atomnotes.models;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.json.Json;
-import jakarta.json.JsonObject;
 import jakarta.validation.constraints.NotEmpty;
 
 public class Task {
 
     private String id;
 
-    private long addedEpochTime;
+    private long createdTime;
+
+    private long lastUpdatedTime;
 
     private String imageUrl;
 
@@ -28,8 +24,11 @@ public class Task {
     public String getId() {return id;}
     public void setId(String id) {this.id = id;}
 
-    public long getAddedEpochTime() {return addedEpochTime;}
-    public void setAddedEpochTime(long addedEpochTime) {this.addedEpochTime = addedEpochTime;}
+    public long getCreatedTime() {return createdTime;}
+    public void setCreatedTime(long createdTime) {this.createdTime = createdTime;}
+
+    public long getLastUpdatedTime() {return lastUpdatedTime;}
+    public void setLastUpdatedTime(long lastUpdatedTime) {this.lastUpdatedTime = lastUpdatedTime;}
 
     public String getImageUrl() {return imageUrl;}
     public void setImageUrl(String imageUrl) {this.imageUrl = imageUrl;}
@@ -41,18 +40,6 @@ public class Task {
     public void setSubtasks(List<String> subtasks) {this.subtasks = subtasks;}
 
     public void addSubtask(String subtask) {subtasks.add(subtask);}
-
-    public String getAddedDateTime() {
-        
-        Instant instant = Instant.ofEpochMilli(addedEpochTime);
-        ZoneId zoneId = ZoneId.systemDefault();
-        LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
-
-        // Define the formatter to match "Mon, 2:30pm, 26 Nov 2024"
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE, h:mma, d MMM yyyy", java.util.Locale.ENGLISH);
-        
-        return localDateTime.format(formatter);
-    }
     
     public static Task mapToTask(Map<String, String> taskMap) {
 
@@ -60,7 +47,8 @@ public class Task {
 
         task.setId(taskMap.get("id"));
         task.setContent(taskMap.get("content"));
-        task.setAddedEpochTime(Long.parseLong(taskMap.get("addedEpochTime")));
+        task.setCreatedTime(Long.parseLong(taskMap.get("createdTime")));
+        task.setLastUpdatedTime(Long.parseLong(taskMap.get("lastUpdatedTime")));
         task.setImageUrl(taskMap.get("imageUrl"));
         
         String subtasksString = taskMap.get("subtasks");
@@ -70,16 +58,6 @@ public class Task {
         task.setSubtasks(subtasks);
 
         return task;
-    }
-
-    public JsonObject getTaskJsonObject() {
-        
-        JsonObject object = Json.createObjectBuilder()
-            .add("added_datetime", getAddedDateTime())
-            .add("content", getContent())
-            .build();
-
-        return object;
     }
 
     public String getSubtasksString() {
@@ -116,10 +94,33 @@ public class Task {
 
         return subtasks;
     }
-    
-    @Override
-    public String toString() {
-        return "Task [id=" + id + ", addedEpochTime=" + addedEpochTime + ", content=" + content + ", subtasks="
-                + subtasks + "]";
-    }
 }
+
+
+
+    
+
+    /* 
+
+    public JsonObject getTaskJsonObject() {
+        
+        JsonObject object = Json.createObjectBuilder()
+            .add("createdTime", getCreatedTime())
+            .add("content", getContent())
+            .build();
+
+        return object;
+    }
+        
+    public String getAddedDateTime() {
+        
+        Instant instant = Instant.ofEpochMilli(addedEpochTime);
+        ZoneId zoneId = ZoneId.systemDefault();
+        LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
+
+        // Define the formatter to match "Mon, 2:30pm, 26 Nov 2024"
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE, h:mma, d MMM yyyy", java.util.Locale.ENGLISH);
+        
+        return localDateTime.format(formatter);
+    }
+    */

@@ -19,6 +19,7 @@ public class SecurityConfig {
                         authorizeHttp.requestMatchers(
                             "/signup", 
                             "/login", 
+                            "/logout",
                             "/oauth2/authorization/**",
                             "/login/oauth2/**",
                             "/css/**", 

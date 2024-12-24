@@ -31,19 +31,18 @@ public class OAuth2GoogleUserService implements OAuth2UserService<OAuth2UserRequ
 
         // Check if this googleAccount has been stored in redis
 
-        // If there's existing account, update the details if there's changes in google
         // Create an account if new login with Google
         if (!userRepo.isIdTaken(sub)) {
             UserEntity user = new UserEntity();
 
-            long createdEpochTime = Instant.now().toEpochMilli();
+            long createdTime= Instant.now().toEpochMilli();
 
             // Set information for user;
             user.setId(sub);
             user.setUsername(name);
             user.setPassword("GOOGLE_DUMMY_PASSWORD");
             user.setEmail(email);
-            user.setCreatedEpochTime(createdEpochTime);
+            user.setCreatedTime(createdTime);
             user.setRole("USER");
             user.setCreateMethod("google");
 
@@ -51,7 +50,7 @@ public class OAuth2GoogleUserService implements OAuth2UserService<OAuth2UserRequ
 
             userRepo.createUser(user);
         }
-        return oAuth2User;
+        return oAuth2User; 
     }
     
 }

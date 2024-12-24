@@ -16,7 +16,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import jakarta.json.Json;
 import jakarta.json.JsonArray;
-import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 import vttp.miniproject.atomnotes.models.Task;
@@ -30,16 +29,11 @@ public class GenService {
     @Value("${UNSPLASH.API.KEY}")
     private String UNSPLASH_API_KEY;
 
-
     private final Logger logger = Logger.getLogger(GenService.class.getName());
 
     public String retrieveImageUrl(String content) {
-        String imageUrl = "";
-
-        // 1. Url
+        
         String base_url = "https://api.unsplash.com/search/photos";
-
-        //2. Json Payload -> No payload
 
         // 2. Instead lets build url
         // Build the URL with the query parameters
@@ -51,8 +45,6 @@ public class GenService {
             //.queryParam("color", "black_and_white")
             .toUriString();
 
-        logger.info("UNSPLASH_API_KEY: %S".formatted(UNSPLASH_API_KEY));
-
         // 3. Request Entity
         RequestEntity<Void> req = RequestEntity
             .get(url)
@@ -61,6 +53,8 @@ public class GenService {
             .build();
         
         RestTemplate template = new RestTemplate();
+
+        String imageUrl = "";
 
         try {
             ResponseEntity<String> resp = template.exchange(req, String.class);
@@ -91,8 +85,6 @@ public class GenService {
 
             imageUrl = urlsObj.getString("regular");
 
-            logger.info("image url: %s".formatted(imageUrl));
-
             return imageUrl;
         }
 
@@ -115,8 +107,6 @@ public class GenService {
         String systemPrompt = "Extract the main object or event in one word or a phrase";
         String userPrompt = content;
 
-        logger.info("User prompt: %s".formatted(userPrompt));
-
         JsonObject reqBody = Json.createObjectBuilder()
             .add("model", model)
             .add("messages", Json.createArrayBuilder()
@@ -136,9 +126,7 @@ public class GenService {
             .header("Authorization", "Bearer " + OPENAI_API_KEY)
             .body(reqBody.toString(), String.class);
 
-        logger.info("Request Body: \n%s".formatted(req.toString()));
         // ... Use RestTemplate to exchange for response
-
         RestTemplate template = new RestTemplate();
 
         try {
@@ -157,8 +145,6 @@ public class GenService {
             JsonObject messageObj = firstChoiceObj.getJsonObject("message");
 
             mainTopic = messageObj.getString("content");
-
-            logger.info("Main topic: %s".formatted(mainTopic));
 
             return mainTopic;
         }
@@ -184,8 +170,6 @@ public class GenService {
         String systemPrompt = "Break down task into 3 smaller subtasks. Keep concise. Output format: 'subtask1|subtask2|subtask3'.";
         String userPrompt = content;
 
-        logger.info("User prompt: %s".formatted(userPrompt));
-
         JsonObject reqBody = Json.createObjectBuilder()
             .add("model", model)
             .add("messages", Json.createArrayBuilder()
@@ -207,7 +191,6 @@ public class GenService {
             .header("Authorization", "Bearer " + OPENAI_API_KEY)
             .body(reqBody.toString(), String.class);
 
-        logger.info("Request Body: \n%s".formatted(req.toString()));
         // ... Use RestTemplate to exchange for response
 
         RestTemplate template = new RestTemplate();
@@ -241,7 +224,12 @@ public class GenService {
             return subtasks;
         }
     }
+}
 
+
+    /*
+     * 
+    
     public String getSchedule(List<Task> tasks) {
 
         JsonArrayBuilder arrBuilder = Json.createArrayBuilder();
@@ -350,5 +338,4 @@ public class GenService {
 
 
         
-    }
-}
+    } */

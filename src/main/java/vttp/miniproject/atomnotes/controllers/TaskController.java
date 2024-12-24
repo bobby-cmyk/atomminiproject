@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
@@ -14,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import vttp.miniproject.atomnotes.models.AuthUserDetails;
 import vttp.miniproject.atomnotes.models.Task;
 import vttp.miniproject.atomnotes.services.GenService;
 import vttp.miniproject.atomnotes.services.TaskService;
@@ -33,11 +35,23 @@ public class TaskController {
     private GenService genSvc;
 
     @GetMapping("/all")
-    public ModelAndView getHome() {
+    public ModelAndView allTasks(
+        @AuthenticationPrincipal AuthUserDetails authUser,
+        @AuthenticationPrincipal OAuth2User oAuth2User) {
+
+        String userId = getUserId(authUser, oAuth2User);
+        String username = getUsername(authUser, oAuth2User);
+        
         ModelAndView mav = new ModelAndView();
 
-        List<Task> tasks = taskSvc.getAllSortedTasks(user);
+        List<Task> tasks = taskSvc.getAllSortedTasks(userId);
+        
+        Long numberOfTasks = taskSvc.numberOfTasks(userId);
+        Long numberOfCompletedTasks = taskSvc.numberOfCompletedTasks(userId);
 
+        mav.addObject("username", username);
+        mav.addObject("numberOfTasks", numberOfTasks);
+        mav.addObject("numberOfCompletedTasks", numberOfCompletedTasks);
         mav.addObject("tasks", tasks);
         mav.setViewName("task-all");
         
@@ -45,21 +59,10 @@ public class TaskController {
     }
 
     @GetMapping("/new")
-    public ModelAndView getNewTaskForm(
-        HttpSession sess
-    ) 
+    public ModelAndView getCreateTaskForm() 
     {
         ModelAndView mav = new ModelAndView();
         
-        if (sess.getAttribute("user") == null) {
-
-            logger.info("Unauthenticated vistor. Redirected to login page.");
-
-            mav.setViewName("redirect:/login");
-
-            return mav;
-        }
-
         Task task = new Task();
         
         logger.info("Creating new task");
@@ -70,14 +73,17 @@ public class TaskController {
         return mav;  
     }
  
-    @PostMapping("/add")
-    public ModelAndView addTask(
+    @PostMapping("/new")
+    public ModelAndView createTask(
         @Valid Task task,
         BindingResult bindings,
-        HttpSession sess
-    ) 
+        @AuthenticationPrincipal AuthUserDetails authUser,
+        @AuthenticationPrincipal OAuth2User oAuth2User
+    )
     {  
         ModelAndView mav = new ModelAndView();
+
+        String userId = getUserId(authUser, oAuth2User);
 
         // Syntax validation for task form
         if (bindings.hasErrors()) {
@@ -87,45 +93,42 @@ public class TaskController {
             return mav;
         }
 
-        String user = sess.getAttribute("user").toString();
-
         String imageUrl = genSvc.retrieveImageUrl(task.getContent());
 
         task.setImageUrl(imageUrl);
 
-        taskSvc.addTask(user, task);
+        taskSvc.createTask(task, userId);
 
-        logger.info("User: %s added a new task".formatted(user));
+        logger.info("User: %s added a new task".formatted(userId));
 
         mav.setViewName("redirect:/task/all");
 
         return mav;
     }
 
-    
-    @PostMapping("/delete")
-    public ModelAndView deleteTask(
-        HttpSession sess,
-        @RequestBody MultiValueMap<String, String> values
+    @PostMapping("/complete")
+    public ModelAndView completeTask(
+        @RequestBody MultiValueMap<String, String> values,
+        @AuthenticationPrincipal AuthUserDetails authUser,
+        @AuthenticationPrincipal OAuth2User oAuth2User
     ) 
     {
         ModelAndView mav = new ModelAndView();
 
-        String user = sess.getAttribute("user").toString();
-
+        String userId = getUserId(authUser, oAuth2User);
         String taskId = values.getFirst("taskId");
 
-        taskSvc.deleteTask(user, taskId);
+        taskSvc.completeTask(taskId, userId);
 
-        logger.info("User: %s deleted a task id: %s".formatted(user, taskId));
+        logger.info("User: %s deleted a task id: %s".formatted(userId, taskId));
 
         mav.setViewName("redirect:/task/all");
 
         return mav;
     }
 
-    @PostMapping("/new/gensubtasks")
-    public ModelAndView generateSubtasksNew(
+    @PostMapping("/generate")
+    public ModelAndView generateSubtasks(
         @Valid Task task,
         BindingResult bindings
     )
@@ -153,8 +156,8 @@ public class TaskController {
         return mav;
     }
         
-    @PostMapping("/edit/gensubtasks")
-    public ModelAndView generateSubtaskEdit(
+    @PostMapping("/regenerate")
+    public ModelAndView regenerateSubtasks(
         @Valid Task task,
         BindingResult bindings
     )
@@ -184,20 +187,10 @@ public class TaskController {
 
     @GetMapping("/edit")
     public ModelAndView getEditTaskForm(
-        @RequestParam("taskId") String taskId,
-        HttpSession sess
+        @RequestParam("taskId") String taskId
     ) 
     {
         ModelAndView mav = new ModelAndView();
-        
-        if (sess.getAttribute("user") == null) {
-
-            logger.info("Unauthenticated vistor. Redirected to login page.");
-
-            mav.setViewName("redirect:/login");
-
-            return mav;
-        }
 
         // Get task info
         Task task = taskSvc.getTask(taskId);
@@ -210,11 +203,10 @@ public class TaskController {
         return mav;  
     }
 
-    @PostMapping("/update")
+    @PostMapping("/edit")
     public ModelAndView updateTask(
         @Valid Task task,
-        BindingResult bindings,
-        HttpSession sess
+        BindingResult bindings
     ) 
     {  
         ModelAndView mav = new ModelAndView();
@@ -234,5 +226,21 @@ public class TaskController {
         mav.setViewName("redirect:/task/all");
 
         return mav;
+    }
+
+    private String getUserId(AuthUserDetails authUser, OAuth2User oAuth2User) {
+
+        if (authUser == null) {
+            return oAuth2User.getAttribute("sub");
+        }
+        return authUser.getId();
+    }
+
+    private String getUsername(AuthUserDetails authUser, OAuth2User oAuth2User) {
+
+        if (authUser == null) {
+            return oAuth2User.getAttribute("name");
+        }
+        return authUser.getUsername();
     }
 }
