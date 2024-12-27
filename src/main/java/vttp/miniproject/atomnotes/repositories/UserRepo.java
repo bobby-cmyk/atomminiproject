@@ -83,4 +83,5 @@ public class UserRepo {
     public boolean isIdTaken(String userId) {
         return template.hasKey(USER_PREFIX + userId);
     }
+
 }

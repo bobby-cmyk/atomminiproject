@@ -18,8 +18,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import jakarta.validation.Valid;
 import vttp.miniproject.atomnotes.models.AuthUserDetails;
+import vttp.miniproject.atomnotes.models.DeleteConfirmation;
 import vttp.miniproject.atomnotes.models.Task;
 import vttp.miniproject.atomnotes.services.GenService;
+import vttp.miniproject.atomnotes.services.StatsService;
 import vttp.miniproject.atomnotes.services.TaskService;
 
 @Controller
@@ -34,6 +36,9 @@ public class TaskController {
     @Autowired
     private GenService genSvc;
 
+    @Autowired
+    private StatsService statsSvc;
+
     @GetMapping("/all")
     public ModelAndView allTasks(
         @AuthenticationPrincipal AuthUserDetails authUser,
@@ -46,12 +51,15 @@ public class TaskController {
 
         List<Task> tasks = taskSvc.getAllSortedTasks(userId);
         
-        Long numberOfTasks = taskSvc.numberOfTasks(userId);
-        Long numberOfCompletedTasks = taskSvc.numberOfCompletedTasks(userId);
+        int numberOfTasks = statsSvc.numberOfCurrentTasks(userId);
 
+        String quote = genSvc.getQuote();
+
+        logger.info("User: %s loaded homepage".formatted(userId));
+
+        mav.addObject("quote", quote);
         mav.addObject("username", username);
         mav.addObject("numberOfTasks", numberOfTasks);
-        mav.addObject("numberOfCompletedTasks", numberOfCompletedTasks);
         mav.addObject("tasks", tasks);
         mav.setViewName("task-all");
         
@@ -68,8 +76,9 @@ public class TaskController {
         
         String userId = getUserId(authUser, oAuth2User);
 
-        // Max 10 current task, redirect to all if more than that
-        if (taskSvc.numberOfTasks(userId) >= 10) {
+        // if user have reached 10 current tasks, they cannot add more new task
+        // Redirect to homepage
+        if (statsSvc.numberOfCurrentTasks(userId) >= 10) {
 
             mav.setViewName("redirect:/task/all");
 
@@ -78,7 +87,7 @@ public class TaskController {
 
         Task task = new Task();
         
-        logger.info("Creating new task");
+        logger.info("User: %s creating new task".formatted(userId));
 
         mav.addObject("task", task);
         mav.setViewName("task-new");
@@ -187,7 +196,7 @@ public class TaskController {
 
         String content = task.getContent();
 
-        logger.info("Generating subtasks for task: %s".formatted(content));
+        logger.info("Regenerating subtasks for task: %s".formatted(content));
 
         List<String> subtasks = genSvc.generateSubtasks(content);
 
@@ -206,7 +215,7 @@ public class TaskController {
         ModelAndView mav = new ModelAndView();
 
         // Get task info
-        Task task = taskSvc.getTask(taskId);
+        Task task = taskSvc.getCurrentTask(taskId);
         
         logger.info("Editing task: %s".formatted(taskId));
 
@@ -238,6 +247,31 @@ public class TaskController {
 
         mav.setViewName("redirect:/task/all");
 
+        return mav;
+    }
+
+    @PostMapping("/clear")
+    public ModelAndView deleteAllCompletedTasks(
+        @AuthenticationPrincipal AuthUserDetails authUser,
+        @AuthenticationPrincipal OAuth2User oAuth2User,
+        @Valid DeleteConfirmation deleteConfirmation,
+        BindingResult bindings) 
+    {
+        String userId = getUserId(authUser, oAuth2User);
+
+        ModelAndView mav = new ModelAndView();
+
+        if (bindings.hasErrors()) {
+            
+            mav.setViewName("/profile");
+            return mav;
+        }
+
+        logger.info("User: %s cleared all completed tasks".formatted(userId));
+
+        taskSvc.clearAllCompletedTasks(userId);
+
+        mav.setViewName("redirect:/task/all");
         return mav;
     }
 

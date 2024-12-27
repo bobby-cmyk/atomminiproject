@@ -46,8 +46,6 @@ public class OAuth2GoogleUserService implements OAuth2UserService<OAuth2UserRequ
             user.setRole("USER");
             user.setCreateMethod("google");
 
-            System.out.printf("\nUser: %s\n", user);
-
             userRepo.createUser(user);
         }
         return oAuth2User; 

@@ -18,30 +18,56 @@
     <link rel="manifest" href="/favicon/site.webmanifest" />
     <title>New Task | Atom</title>
 </head>
-<body class="home-container">
+<body class="main-container">
 
     <div data-th-replace="~{navbar :: navbar}"></div>
 
-    <div class="tasks-container">
+    <div class="cards-container">
         
         <form 
             method="POST" 
             data-th-object="${task}">
-
+            
             <input 
                 type="hidden" 
                 data-th-name="${_csrf.parameterName}" 
                 data-th-value="${_csrf.token}">
 
-            <button 
-                type="submit" 
-                formaction="/task/new"
-                class="task-button ibm-plex-sans-medium">
-                <i class="fi fi-bs-plus new-task-icon"></i>
-                Add task
-            </button>
+            <div class="button-row">
+                <button 
+                    type="submit" 
+                    formaction="/task/new"
+                    class="long-button ibm-plex-sans-medium">
+                    <i class="fi fi-bs-plus new-task-icon"></i>
+                    Add task
+                </button>
+
+                <div class="priority-toggle">
+                    <input 
+                        type="radio" 
+                        class="priority-radio" 
+                        id="priority-off" 
+                        name="priority" 
+                        value="false" 
+                        data-th-field="*{priority}">
+
+                    <label for="priority-off">●</label>
+
+                    <input 
+                        type="radio" 
+                        class="priority-radio"
+                        id="priority-on" 
+                        name="priority" 
+                        value="true"
+                        data-th-field="*{priority}">
+
+                    <label for="priority-on">★</label>
+                </div>
+
+            </div>
             
-            <div class="task-card">
+            
+            <div class="card">
                 <textarea 
                     type="text"
                     class="task-content-input libre-baskerville-regular"  
@@ -54,19 +80,18 @@
                 <span 
                     data-th-if="*{#fields.hasErrors('content')}"
                     data-th-errors="*{content}"
-                    class="task-empty-messsage ibm-plex-sans-light">
+                    class="error-messsage task-empty ibm-plex-sans-light">
                 </span>
             </div>
 
             <button 
                 type="submit" 
                 formaction="/task/generate"
-                class="task-button generate-button ibm-plex-sans-medium">
-
-                Generate sub-tasks
+                class="long-button generate-button ibm-plex-sans-medium">
+                Suggest subtasks
             </button>
 
-            <div class="task-card">
+            <div class="card">
                 <div 
                     class="subtasks-container ibm-plex-sans-light"
                     data-th-if="*{not #lists.isEmpty(subtasks)}" 

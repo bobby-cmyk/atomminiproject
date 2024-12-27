@@ -1,7 +1,7 @@
 package vttp.miniproject.atomnotes.repositories;
 
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,16 +32,9 @@ public class TaskRepo {
 
         HashOperations<String, String, String> hashOps = template.opsForHash();
 
-        Map<String, String> values = new HashMap<>();
-
         String taskId = task.getId();
 
-        values.put("id", taskId);
-        values.put("createdTime", Long.toString(task.getCreatedTime()));
-        values.put("lastUpdatedTime", Long.toString(task.getLastUpdatedTime()));
-        values.put("content", task.getContent());
-        values.put("subtasks", task.getSubtasksString());
-        values.put("imageUrl", task.getImageUrl());
+        Map<String, String> values = task.taskToMap();
 
         hashOps.putAll(TASK_PREFIX + taskId, values);
 
@@ -64,6 +57,11 @@ public class TaskRepo {
         // Delete task from current tasks
         template.delete(TASK_PREFIX + taskId);
 
+        long completedTime = Instant.now().toEpochMilli();
+
+        // Add completed time
+        taskMap.put("completedTime", Long.toString(completedTime));
+
         // Add task back as completed
         hashOps.putAll(COMPLETED_TASK_PREFIX + taskId, taskMap);
 
@@ -78,23 +76,16 @@ public class TaskRepo {
 
         HashOperations<String, String, String> hashOps = template.opsForHash();
 
-        Map<String, String> values = new HashMap<>();
-
         String taskId = task.getId();
 
-        values.put("id", taskId);
-        values.put("createdTime", Long.toString(task.getCreatedTime()));
-        values.put("lastUpdatedTime", Long.toString(task.getLastUpdatedTime()));
-        values.put("content", task.getContent());
-        values.put("subtasks", task.getSubtasksString());
-        values.put("imageUrl", task.getImageUrl());
+        Map<String, String> values = task.taskToMap();
 
         //Overwrite
         hashOps.putAll(TASK_PREFIX + taskId, values);
     }
 
     // hgetall "task:taskId"
-    public Task getTask(String taskId) {
+    public Task getCurrentTask(String taskId) {
 
         HashOperations<String, String, String> hashOps = template.opsForHash();
 
@@ -105,7 +96,7 @@ public class TaskRepo {
 
     // sget "userTaskIds:userId"
     // hgetall "task:taskId"
-    public List<Task> getAllTasks(String userId) {
+    public List<Task> getAllCurrentTasks(String userId) {
         
         SetOperations<String, String> setOps = template.opsForSet();
 
@@ -173,19 +164,21 @@ public class TaskRepo {
         template.delete(COMPLETED_TASK_IDS_PREFIX + userId);
     }
 
+    // Assuming users wont have 2,147,483,647 tasks
+
     // ssize "userTaskIds:userId"
-    public Long numberOfTasks(String userId) {
+    public int numberOfCurrentTasks(String userId) {
 
         SetOperations<String, String> setOps = template.opsForSet();
-
-        return setOps.size(TASK_IDS_PREFIX + userId);
+        
+        return Math.toIntExact(setOps.size(TASK_IDS_PREFIX + userId));
     }
 
     // sssize "userCompletedTaskIds:userId"
-    public Long numberOfCompletedTasks(String userId) {
+    public int numberOfCompletedTasks(String userId) {
 
         SetOperations<String, String> setOps = template.opsForSet();
 
-        return setOps.size(COMPLETED_TASK_IDS_PREFIX + userId);
+        return Math.toIntExact(setOps.size(COMPLETED_TASK_IDS_PREFIX + userId));
     }
 }

@@ -19,9 +19,11 @@ public class TaskService {
 
     public void createTask(Task task, String userId) {
 
+        // Set a random id
         String taskId = UUID.randomUUID().toString();
         task.setId(taskId);
-
+        
+        // Set created time and last updated time 
         long createdTime = Instant.now().toEpochMilli();
         task.setCreatedTime(createdTime);
         task.setLastUpdatedTime(createdTime);
@@ -34,26 +36,31 @@ public class TaskService {
     }
 
     public void updateTask(Task task) {
+
+        // Update last updated time
         long currentTime = Instant.now().toEpochMilli();
         task.setLastUpdatedTime(currentTime);
 
         taskRepo.updateTask(task);
     }
 
-    public Task getTask(String taskId) {
+    public Task getCurrentTask(String taskId) {
 
-        Task task = taskRepo.getTask(taskId);
+        Task task = taskRepo.getCurrentTask(taskId);
 
         return task;
     }
 
     public List<Task> getAllSortedTasks(String userId) {
 
-        List<Task> tasks = taskRepo.getAllTasks(userId);
+        List<Task> tasks = taskRepo.getAllCurrentTasks(userId);
 
         // Sort reverse, descending from latest to oldest
         List<Task> sortedTasks = tasks.stream()
+            // Most updated to least updated
             .sorted((t1, t2) -> Long.compare(t2.getLastUpdatedTime(), t1.getLastUpdatedTime()))
+            // Priority tasks at the top
+            .sorted((t1, t2) -> Boolean.compare(t2.isPriority(), t1.isPriority()))
             .collect(Collectors.toList());
             
         return sortedTasks;
@@ -74,19 +81,13 @@ public class TaskService {
         List<Task> sortedTasks = tasks.stream()
             .sorted((t1, t2) -> Long.compare(t2.getLastUpdatedTime(), t1.getLastUpdatedTime()))
             .collect(Collectors.toList());
-            
+               
         return sortedTasks;
     }
 
     public void clearAllCompletedTasks(String userId) {
+
         taskRepo.clearAllCompletedTasks(userId);
-    }
 
-    public Long numberOfTasks(String userId) {
-        return taskRepo.numberOfTasks(userId);
-    }
-
-    public Long numberOfCompletedTasks(String userId) {
-        return taskRepo.numberOfCompletedTasks(userId);
     }
 }

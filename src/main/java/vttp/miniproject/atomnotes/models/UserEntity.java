@@ -44,7 +44,7 @@ public class UserEntity implements UserDetails {
     public static UserEntity mapToUserEntity(Map<Object, Object> userMap) {
         UserEntity user = new UserEntity();
 
-        user.setId(null);
+        user.setId((String) userMap.get("id"));
         user.setCreatedTime(Long.parseLong((String) userMap.get("createdTime")));
         user.setUsername((String) userMap.get("username"));
         user.setPassword((String) userMap.get("password"));
@@ -70,19 +70,4 @@ public class UserEntity implements UserDetails {
     @Override public boolean isAccountNonLocked() { return true; }
     @Override public boolean isCredentialsNonExpired() { return true; }
     @Override public boolean isEnabled() { return true; }
-
-    @Override
-    public String toString() {
-        return "UserEntity [id=" + id + ", createdTime=" + createdTime + ", username=" + username
-                + ", password=" + password + ", email=" + email + ", role=" + role + "]";
-    }
 }
-
-    /*
-    public LocalDateTime getCreatedDateTime() {
-        Instant instant = Instant.ofEpochMilli(createdTime);
-        ZoneId zoneId = ZoneId.systemDefault();
-        LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
-        return localDateTime;
-    }
-    */

@@ -18,25 +18,25 @@
     <link rel="manifest" href="/favicon/site.webmanifest" />
     <title>All Tasks | Atom</title>
 </head>
-<body class="home-container">
+<body class="main-container">
 
     <div data-th-replace="~{navbar :: navbar}"></div>
 
-    <div class="tasks-container">
+    <div class="cards-container">
 
         <div data-th-if="${numberOfTasks >= 8 && numberOfTasks < 10}"
-            class="limit-card">
+            class="card limit-card">
 
             <p class="ibm-plex-sans-bold">
                 You're approaching the limit
             </p>
             <p class="ibm-plex-sans-light">
-                Maximum 10 tasks. Time to complete your tasks.
+                Maximum 10 tasks. Complete your tasks!
             </p>
         </div>
 
         <div data-th-if="${numberOfTasks >= 10}"
-            class="limit-card max-limit-card">
+            class="card limit-card max-limit-card">
             
             <p class="ibm-plex-sans-bold">
                 You have reached the limit 
@@ -46,23 +46,19 @@
             </p>
         </div>
 
-        <div class="stat-card">
+        <div class="card">
 
-            <div class="stat-container">
+            <div class="home-greetings-container">
                 <div class="stat">
                     <p 
                         data-th-text="${numberOfTasks}"
                         class="stat-number libre-baskerville-regular">
                     </p>
-                    <p class="ibm-plex-sans-light">Current Tasks</p>
+                    <p class="stat-label ibm-plex-sans-light">Current Tasks</p>
                 </div>
 
-                <div class="stat">
-                    <p 
-                        data-th-text="${numberOfCompletedTasks}"
-                        class="stat-number libre-baskerville-regular">
-                    </p>
-                    <p class="ibm-plex-sans-light">Completed Tasks</p>
+                <div class="quote libre-baskerville-regular-italic">
+                    <p data-th-text="'&quot;' + ${quote} + '&quot;'"></p>
                 </div>
             </div>
         </div>
@@ -71,24 +67,25 @@
             data-th-if="${numberOfTasks lt 10}"
             method="GET" 
             action="/task/new">
+
             <button 
                 type="submit"
-                class="task-button ibm-plex-sans-medium">
+                class="long-button task-all-button ibm-plex-sans-medium">
                 <i class="fi fi-bs-plus new-task-icon"></i> 
                 New task
             </button>
         </form>
 
         <div 
-            class="task-card" 
             data-th-each="task : ${tasks}" 
-            data-th-object="${task}">
+            data-th-object="${task}" 
+            data-th-class="*{priority ? 'card priority-task' : 'card'}">
 
-            <p class="task-content libre-baskerville-regular" 
+            <p class="card-title libre-baskerville-regular" 
                 data-th-text="*{content}"></p>
 
             <div class="subtasks-container ibm-plex-sans-light">
-                <p class="subtask-content" 
+                <p class="card-body" 
                     data-th-each="subtask : *{subtasks}" 
                     data-th-text="${subtask}">
                 </p>
@@ -97,7 +94,7 @@
             <img class="task-image" 
                 data-th-src="*{imageUrl}">
 
-            <div class="task-buttons-container">
+            <div class="task-action-buttons">
 
                 <form 
                     method="GET"
@@ -108,8 +105,8 @@
                         name="taskId" 
                         data-th-value="*{id}">
                     <button 
-                        type="submit" 
-                        class="circle-button edit-button">
+                        type="submit"
+                        data-th-class="*{priority ? 'circle-button priority-button' : 'circle-button'}">
                         <i class="fi fi-bs-pencil"></i>
                     </button>
                 </form>
@@ -128,7 +125,7 @@
                         data-th-value="*{id}">
                     <button 
                         type="submit" 
-                        class="circle-button delete-button">
+                        data-th-class="*{priority ? 'circle-button priority-button' : 'circle-button'}">
                         <i class="fi fi-bs-check"></i>
                     </button>
                 </form>

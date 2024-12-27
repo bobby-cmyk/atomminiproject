@@ -1,11 +1,15 @@
 package vttp.miniproject.atomnotes.services;
 
 import java.io.StringReader;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Logger;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
@@ -16,12 +20,18 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import jakarta.json.Json;
 import jakarta.json.JsonArray;
+import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
 import jakarta.json.JsonReader;
 import vttp.miniproject.atomnotes.models.Task;
+import vttp.miniproject.atomnotes.repositories.CacheRepo;
 
 @Service
 public class GenService {
+
+    @Autowired
+    private CacheRepo cacheRepo;
     
     @Value("${OPENAI.API.KEY}")
     private String OPENAI_API_KEY;
@@ -29,7 +39,90 @@ public class GenService {
     @Value("${UNSPLASH.API.KEY}")
     private String UNSPLASH_API_KEY;
 
+    private final String GPT4OMINI = "gpt-4o-mini";
+    private final String GPT4O = "gpt-4o";
+
     private final Logger logger = Logger.getLogger(GenService.class.getName());
+
+    public String generateMainTopic(String content) {
+        
+        String systemPrompt = "Extract the main object or event in one word or a phrase";
+
+        try {
+            return promptGPT(systemPrompt, content, GPT4OMINI);
+        }
+
+        catch(Exception e) {
+            logger.warning("Error: generateMainTopic(). Message: %s".formatted(e.getMessage()));
+            // As default placeholder if error
+            return "sunset mountain";
+        }
+    }
+
+    public List<String> generateSubtasks(String content) {
+
+        String systemPrompt = "Break down task into 3 smaller subtasks. Keep concise. Output format: 'subtask1|subtask2|subtask3'.";
+
+        try {
+            // Convert string generated to subtasks
+            return Task.subtasksStringToList(promptGPT(systemPrompt, content, GPT4OMINI));
+        }
+
+        catch(Exception e) {
+            logger.warning("Error: generateSubtasks(). Message: %s".formatted(e.getMessage()));
+            
+            // As default placeholder if error
+            List<String> subtasks = new ArrayList<>();
+
+            subtasks.add("Subtask 1");
+            subtasks.add("Subtask 2");
+            subtasks.add("Subtask 3");
+
+            return subtasks;
+        }
+    }
+
+    public String getTodayOverview(List<Task> currentTasks, List<Task> completedTasksToday) {
+          
+        // If there are no tasks, return default message
+        if (currentTasks.isEmpty() && completedTasksToday.isEmpty()) {
+            return "Hmm... looks empty. Let's get started!";
+        }
+
+        String systemPrompt = "Provide an overview of user's todo list for the day. Be encouraging and motivating. Keep it concise and precise, 50 words. Avoid formatting.";
+
+        String userPrompt = todayOverviewPromptBuilder(currentTasks, completedTasksToday);
+
+        try {
+            return promptGPT(systemPrompt, userPrompt, GPT4O);
+        }
+
+        catch(Exception e) {
+            logger.warning("Error: getTodayOverview(). Message: %s".formatted(e.getMessage()));
+            return "Sorry we are having some troubles. Check again soon";
+        }
+    }
+
+    public String getPreviousWeekOverview(List<Task> completedTasksPreviousWeek) {
+        
+        // If there are no tasks, return default message
+        if (completedTasksPreviousWeek.isEmpty()) {
+            return "You did not complete any task last week!";
+        }
+
+        String systemPrompt = "Provide an overview of user's completed tasks for the past few days. Be encouraging and motivating. Keep it concise and precise, 50 words. Avoid formatting.";
+
+        String userPrompt = previousWeekOverviewPromptBuilder(completedTasksPreviousWeek);
+
+        try {
+            return promptGPT(systemPrompt, userPrompt, GPT4O);
+        }
+
+        catch(Exception e) {
+            logger.warning("Error: getPreviousWeekOverview(). Message: %s".formatted(e.getMessage()));
+            return "Sorry we are having some troubles. Check again soon";
+        }
+    }
 
     public String retrieveImageUrl(String content) {
 
@@ -37,17 +130,13 @@ public class GenService {
         
         String base_url = "https://api.unsplash.com/search/photos";
 
-        // 2. Instead lets build url
-        // Build the URL with the query parameters
         String url = UriComponentsBuilder
             .fromUriString(base_url)
             .queryParam("query", generateMainTopic(content))
             .queryParam("page", 1)
             .queryParam("per_page", 10)
-            //.queryParam("color", "black_and_white")
             .toUriString();
 
-        // 3. Request Entity
         RequestEntity<Void> req = RequestEntity
             .get(url)
             .accept(MediaType.APPLICATION_JSON)
@@ -67,16 +156,19 @@ public class GenService {
 
             JsonArray resultsArr = payloadObj.getJsonArray("results");
 
+            // Initialise a bound for generating random number
             int bound = 10;
 
             int arrSize = resultsArr.size();
 
+            // bound = arrSize if arrSize is smaller than 10
             if (arrSize < bound) {
                 bound = arrSize;
             }
 
             Random rand = new Random();
 
+            // Get a random index
             int imageIndex = rand.nextInt(bound);
 
             JsonObject resultObj = resultsArr.getJsonObject(imageIndex);
@@ -85,6 +177,7 @@ public class GenService {
 
             imageUrl = urlsObj.getString("regular");
 
+            // If results is empty
             if (imageUrl.isEmpty()) {
                 imageUrl = "https://images.unsplash.com/photo-1672237020985-2e38261617f9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w2ODQxMjd8MHwxfHNlYXJjaHwzfHxzdW5zZXQlMjBtb3VudGFpbnxlbnwwfHx8fDE3MzUwMjQxMjB8MA&ixlib=rb-4.0.3&q=80&w=1080";
             }
@@ -93,89 +186,71 @@ public class GenService {
         }
 
         catch (Exception e) {
-            logger.info("Error: %s".formatted(e.getMessage()));
+            logger.warning("Error: getPreviousWeekOverview(). Message: %s".formatted(e.getMessage()));
 
+            // Default photo if error occurs
             imageUrl = "https://images.unsplash.com/photo-1672237020985-2e38261617f9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w2ODQxMjd8MHwxfHNlYXJjaHwzfHxzdW5zZXQlMjBtb3VudGFpbnxlbnwwfHx8fDE3MzUwMjQxMjB8MA&ixlib=rb-4.0.3&q=80&w=1080";
             
             return imageUrl;
         }
     }
 
-    private String generateMainTopic(String content) {
+    public String getQuote() {
 
-        String mainTopic = "";
+        String quote = "";
 
-        // 1. URL 
-        String url = "https://api.openai.com/v1/chat/completions";
-        
-        // 2. Json Payload
-        String model = "gpt-4o-mini";
-        String systemPrompt = "Extract the main object or event in one word or a phrase";
-        String userPrompt = content;
+        // If quote is cached, return from cache
+        if (cacheRepo.checkQuoteCached()) {
 
-        JsonObject reqBody = Json.createObjectBuilder()
-            .add("model", model)
-            .add("messages", Json.createArrayBuilder()
-                .add(Json.createObjectBuilder()
-                    .add("role", "system")
-                    .add("content", systemPrompt))
-                .add(Json.createObjectBuilder()
-                    .add("role", "user")
-                    .add("content", userPrompt)))
-            .build();
+            quote = cacheRepo.retrieveCachedQuote();
 
-        // 3. Request Entity
-        RequestEntity<String> req = RequestEntity
-            .post(url)
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON)
-            .header("Authorization", "Bearer " + OPENAI_API_KEY)
-            .body(reqBody.toString(), String.class);
-
-        // ... Use RestTemplate to exchange for response
-        RestTemplate template = new RestTemplate();
-
-        try {
-            ResponseEntity<String> resp = template.exchange(req, String.class);
-
-            String payload = resp.getBody();
-
-            JsonReader reader = Json.createReader(new StringReader(payload));
-
-            JsonObject result = reader.readObject();
-
-            JsonArray choicesArr = result.getJsonArray("choices");
-
-            JsonObject firstChoiceObj = choicesArr.getJsonObject(0);
-
-            JsonObject messageObj = firstChoiceObj.getJsonObject("message");
-
-            mainTopic = messageObj.getString("content");
-
-            return mainTopic;
+            return quote;
         }
 
-        catch (Exception e) {
+        else {
+            String url = "https://api.adviceslip.com/advice";
 
-            mainTopic = "sunset mountain";
+            RequestEntity<Void> req = RequestEntity
+                .get(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .build();
 
-            logger.info("Error occured: %s.".formatted(e.getMessage()));
-            return mainTopic;
+            RestTemplate template = new RestTemplate();
+
+            try {
+                ResponseEntity<String> resp = template.exchange(req, String.class);
+    
+                String payload = resp.getBody();
+    
+                JsonReader reader = Json.createReader(new StringReader(payload));
+    
+                JsonObject result = reader.readObject();
+
+                JsonObject slip = result.getJsonObject("slip");
+    
+                quote = slip.getString("advice");
+    
+                cacheRepo.cacheQuote(quote);
+    
+                return quote;
+            }
+    
+            catch (Exception e) {
+                
+                logger.warning("Error: getQuote(). Message: %s.".formatted(e.getMessage()));
+    
+                quote = "If you want to be happily married, marry a happy person.";
+    
+                return quote;
+            }
         }
     }
 
+    private String promptGPT(String systemPrompt, String userPrompt, String model) throws Exception{
 
-    public List<String> generateSubtasks(String content) {
+        String gptReponse = "";
         
-        List<String> subtasks = new ArrayList<>();
-
-        // 1. URL 
         String url = "https://api.openai.com/v1/chat/completions";
-        
-        // 2. Json Payload
-        String model = "gpt-4o-mini";
-        String systemPrompt = "Break down task into 3 smaller subtasks. Keep concise. Output format: 'subtask1|subtask2|subtask3'.";
-        String userPrompt = content;
 
         JsonObject reqBody = Json.createObjectBuilder()
             .add("model", model)
@@ -188,9 +263,6 @@ public class GenService {
                     .add("content", userPrompt)))
             .build();
 
-        
-
-        // 3. Request Entity
         RequestEntity<String> req = RequestEntity
             .post(url)
             .contentType(MediaType.APPLICATION_JSON)
@@ -198,153 +270,79 @@ public class GenService {
             .header("Authorization", "Bearer " + OPENAI_API_KEY)
             .body(reqBody.toString(), String.class);
 
-        // ... Use RestTemplate to exchange for response
-
         RestTemplate template = new RestTemplate();
 
-        try {
-            ResponseEntity<String> resp = template.exchange(req, String.class);
+        ResponseEntity<String> resp = template.exchange(req, String.class);
 
-            String payload = resp.getBody();
+        String payload = resp.getBody();
 
-            JsonReader reader = Json.createReader(new StringReader(payload));
+        JsonReader reader = Json.createReader(new StringReader(payload));
 
-            JsonObject result = reader.readObject();
+        JsonObject result = reader.readObject();
 
-            JsonArray choicesArr = result.getJsonArray("choices");
+        JsonArray choicesArr = result.getJsonArray("choices");
 
-            JsonObject firstChoiceObj = choicesArr.getJsonObject(0);
+        JsonObject firstChoiceObj = choicesArr.getJsonObject(0);
 
-            JsonObject messageObj = firstChoiceObj.getJsonObject("message");
+        JsonObject messageObj = firstChoiceObj.getJsonObject("message");
 
-            String subtasksString = messageObj.getString("content");
+        gptReponse = messageObj.getString("content");
 
-            subtasks = Task.subtasksStringToList(subtasksString);
+        return gptReponse;
+    }
 
-            return subtasks;
+    private String todayOverviewPromptBuilder(List<Task> currentTasks, List<Task> completedTasks) {
+
+        // {"Completed": ["task1", "task2"...], "Current": ["task3", "task4"...]}
+
+        JsonArrayBuilder currentTasksArrayBuilder = Json.createArrayBuilder();
+
+        for (Task currentTask : currentTasks) {
+            currentTasksArrayBuilder.add(currentTask.getContent());
         }
 
-        catch (Exception e) {
-            subtasks.add("Subtask 1");
-            subtasks.add("Subtask 2");
-            subtasks.add("Subtask 3");
+        JsonArrayBuilder completedTasksArrayBuilder = Json.createArrayBuilder();
 
-            logger.info("Error occured: %s.".formatted(e.getMessage()));
-            return subtasks;
+        for (Task completedTask : completedTasks) {
+            completedTasksArrayBuilder.add(completedTask.getContent());
         }
+
+        JsonObject promptJsonObj = Json.createObjectBuilder()
+            .add("Completed", completedTasksArrayBuilder)
+            .add("Current", currentTasksArrayBuilder) 
+            .build();
+
+        return promptJsonObj.toString();
+    }
+
+    private String previousWeekOverviewPromptBuilder(List<Task> completedTasks) {
+
+        // [{"task": "task1", "date": "Wed, 24 Dec 2024"},{"task": "task2", "date": "Tue, 23 Dec 2024"}]
+
+        JsonObjectBuilder completedTaskObjectBuilder = Json.createObjectBuilder();
+
+        JsonArrayBuilder completedTasksArrayBuilder = Json.createArrayBuilder();
+
+        for (Task completedTask : completedTasks) {
+            completedTaskObjectBuilder
+                .add("task", completedTask.getContent())
+                .add("date", formatCompletedDate(completedTask.getCompletedTime()));
+
+            completedTasksArrayBuilder.add(completedTaskObjectBuilder);
+        }
+
+        JsonArray promptJsonArr = completedTasksArrayBuilder.build();
+
+        return promptJsonArr.toString();
+    }
+
+    private String formatCompletedDate(long completedDate) {
+        // epochmilli -> "Wed, 24 Dec 2024"
+        String formattedDate = Instant.ofEpochMilli(completedDate)
+                .atZone(ZoneId.systemDefault())
+                .format(DateTimeFormatter.ofPattern("EEE, dd MMM yyyy"));
+
+        return formattedDate;
     }
 }
-
-
-    /*
-     * 
-    
-    public String getSchedule(List<Task> tasks) {
-
-        JsonArrayBuilder arrBuilder = Json.createArrayBuilder();
-
-        for (Task task : tasks) {
-            JsonObject taskObj = task.getTaskJsonObject();
-            arrBuilder.add(taskObj);
-        }
-
-        JsonObject tasksObj = Json.createObjectBuilder()
-            .add("tasks", arrBuilder)
-            .build();
-
-
-        // Initialise schedule variable
-        String schedule = "";
-
-        // 1. URL   
-        String url = "https://api.openai.com/v1/chat/completions";
-        
-        // 2. Json Payload
-        String model = "gpt-4o-2024-08-06";
-        String systemPrompt = "Analyse the tasks' content and added datetime to determine their datetime. Output in the given schedule structure sorted by datetime";
-        String userPrompt = tasksObj.toString();
-
-        logger.info("User prompt: %s".formatted(userPrompt));
-
-        
-        JsonObject reqBody = Json.createObjectBuilder()
-            .add("model", model)
-            .add("messages", Json.createArrayBuilder()
-                .add(Json.createObjectBuilder()
-                    .add("role", "system")
-                    .add("content", systemPrompt))
-                .add(Json.createObjectBuilder()
-                    .add("role", "user")
-                    .add("content", userPrompt)))
-            .add("response_format", Json.createObjectBuilder()
-                .add("type", "json_schema")
-                .add("json_schema", Json.createObjectBuilder()
-                    .add("name", "schedule")
-                    .add("schema", Json.createObjectBuilder()
-                        .add("type", "object")
-                        .add("properties", Json.createObjectBuilder()
-                            .add("tasks", Json.createObjectBuilder()
-                                .add("type", "array")
-                                .add("items", Json.createObjectBuilder()
-                                    .add("type", "object")
-                                    .add("properties", Json.createObjectBuilder()
-                                        .add("datetime", Json.createObjectBuilder()
-                                            .add("type", "string"))
-                                        .add("task_content", Json.createObjectBuilder()
-                                            .add("type", "string")))
-                                    .add("required", Json.createArrayBuilder()
-                                        .add("datetime")
-                                        .add("task_content"))
-                                    .add("additionalProperties", false))))
-                        .add("required", Json.createArrayBuilder()
-                            .add("tasks"))
-                        .add("additionalProperties", false))
-                    .add("strict", true))) // Strict parameter added
-            .build();
-        
-
-        // 3. Request Entity
-        RequestEntity<String> req = RequestEntity
-            .post(url)
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON)
-            .header("Authorization", "Bearer " + OPENAI_API_KEY)
-            .body(reqBody.toString(), String.class);
-
-        logger.info("Request Body: \n%s".formatted(req.toString()));
-        // ... Use RestTemplate to exchange for response
-
-        RestTemplate template = new RestTemplate();
-
-        try {
-            ResponseEntity<String> resp = template.exchange(req, String.class);
-
-            String payload = resp.getBody();
-
-            JsonReader reader = Json.createReader(new StringReader(payload));
-
-            JsonObject result = reader.readObject();
-
-            JsonArray choicesArr = result.getJsonArray("choices");
-
-            JsonObject firstChoiceObj = choicesArr.getJsonObject(0);
-
-            JsonObject messageObj = firstChoiceObj.getJsonObject("message");
-
-            String content = messageObj.getString("content");
-
-            schedule = content;
-
-            return schedule;
-        }
-
-        catch (Exception e) {
-            //TODO if exception try again
-
-            logger.info("Error occured: %s.".formatted(e.getMessage()));
-            return schedule;
-        }
-
-
-        
-    } */
+   

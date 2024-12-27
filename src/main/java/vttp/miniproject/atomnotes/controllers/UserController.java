@@ -35,7 +35,7 @@ public class UserController {
 
         LoginForm loginForm = new LoginForm();
 
-        logger.info("User reached login page.");
+        logger.info("A visitor reached login page.");
 
         mav.addObject("loginForm", loginForm);
         mav.setViewName("login");

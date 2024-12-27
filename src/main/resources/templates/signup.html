@@ -56,6 +56,18 @@
             </span>
 
             <input 
+                type="email"            
+                class="auth-form-input ibm-plex-sans-regular"
+                data-th-field="*{email}" 
+                placeholder="Email">
+            
+            <span 
+                data-th-if="${#fields.hasErrors('email')}"
+                data-th-errors="*{email}"
+                class="error-message ibm-plex-sans-regular">
+            </span>
+
+            <input 
                 type="password" 
                 class="auth-form-input ibm-plex-sans-regular"
                 data-th-field="*{password}" 
@@ -77,18 +89,6 @@
                 class="error-message ibm-plex-sans-regular"
                 data-th-if="${#fields.hasErrors('confirmPassword')}"
                 data-th-errors="*{confirmPassword}">
-            </span>
-
-            <input 
-                type="email"            
-                class="auth-form-input ibm-plex-sans-regular"
-                data-th-field="*{email}" 
-                placeholder="Email">
-            
-            <span 
-                data-th-if="${#fields.hasErrors('email')}"
-                data-th-errors="*{email}"
-                class="error-message ibm-plex-sans-regular">
             </span>
   
             <button 

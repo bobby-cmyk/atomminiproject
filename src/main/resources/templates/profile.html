@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel='stylesheet' href="/css/reset.css">
+    <link rel='stylesheet' href="/css/fonts.css">
+    <link rel='stylesheet' href="/css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-bold-straight/css/uicons-bold-straight.css">
+    <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Atom" />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
+    <title>Profile | Atom</title>
+</head>
+<body class="main-container" data-th-object="${userStats}">
+
+    <div data-th-replace="~{navbar :: navbar}"></div>
+
+    <div class="cards-container">
+
+        <div class="card overview-card">
+            <h2 class="card-title overview-title libre-baskerville-regular">
+               Hey <b><span data-th-text="${username}"></span></b>!
+            </h2>
+            <div class="overview-body-container">
+                <p data-th-text="*{todayOverview}"
+                    class="card-body overview-body ibm-plex-sans-regular"> 
+                </p>
+            </div>
+        </div>
+
+        <div class="card">
+
+            <div class="card-row"> 
+                <div class="stat">
+                    <p 
+                        data-th-text="*{currentTasks}"
+                        class="stat-number libre-baskerville-regular">
+                    </p>
+                    <p class="stat-title ibm-plex-sans-light">Current Tasks</p>
+                </div>
+
+                <div class="stat">
+                    <p 
+                        data-th-text="*{completedTasksToday}"
+                        class="stat-number libre-baskerville-regular">
+                    </p>
+                    <p class="stat-title ibm-plex-sans-light">Today's Completed</p>
+                </div>
+
+                <div class="stat">
+                    <p 
+                        data-th-text="*{completedTasks}"
+                        class="stat-number libre-baskerville-regular">
+                        123
+                    </p>
+                    <p class="stat-title ibm-plex-sans-light">All Time Completed</p>
+                </div>
+            </div>
+
+            <div class="card-row">
+                <div class="stat">
+                    <p 
+                        data-th-text="*{tasksCreatedPerDay}"
+                        class="stat-number libre-baskerville-regular">
+                    </p>
+                    <p class="stat-title ibm-plex-sans-light">Tasks created / day</p>
+                </div>
+
+                <div class="stat">
+                    <p 
+                        data-th-text="*{tasksCompletedPerDay}"
+                        class="stat-number libre-baskerville-regular">
+                    </p>
+                    <p class="stat-title ibm-plex-sans-light">Tasks completed / day</p>
+                </div>
+
+                <div class="stat">
+                    <p  
+                        data-th-text="*{userJoinedDate}"
+                        class="stat-number libre-baskerville-regular">
+                    </p>
+                    <p class="stat-title ibm-plex-sans-light">Joined date</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title  libre-baskerville-regular">
+                Your past few days...
+            </h2>
+
+            <p 
+                data-th-text="*{previousWeekOverview}"
+                class="card-body ibm-plex-sans-light">
+            </p>
+
+        </div>
+
+        <div class="card">
+            <h1 class="card-title libre-baskerville-regular">
+                Export Tasks CSV
+            </h1>
+
+            <p class="card-body ibm-plex-sans-light">
+                Export all tasks details (current and completed). Please type 'export-all-tasks' to proceed.
+            </p>
+
+            <form method="POST" action="/task/clear" data-th-object="${deleteConfirmation}">
+
+                <input 
+                    type="hidden" 
+                    data-th-name="${_csrf.parameterName}" 
+                    data-th-value="${_csrf.token}">
+
+                <div class="form-row">
+                    <input 
+                        type="text" 
+                        class="delete-input ibm-plex-sans-light"
+                        data-th-field="*{confirmationMessage}"
+                        placeholder="delete-all-completed-tasks">
+
+                    <button 
+                        type="submit"
+                        class="delete-button ibm-plex-sans-regular">
+                        Delete
+                    </button>
+
+                </div>
+                
+                <span 
+                    data-th-if="*{#fields.hasErrors('confirmationMessage')}"
+                    data-th-errors="*{confirmationMessage}"
+                    class="error-message ibm-plex-sans-light">
+                </span>
+            </form>
+            
+        </div>
+
+        <div class="card">
+            <h1 class="card-title danger-title libre-baskerville-regular">
+                DANGER
+            </h1>
+
+            <p class="card-body ibm-plex-sans-light">
+                This will permanently delete all your past completed tasks. Please type 'delete-all-completed-tasks' to proceed.
+            </p>
+
+            <form method="POST" action="/profile/clear" data-th-object="${deleteConfirmation}">
+
+                <input 
+                    type="hidden" 
+                    data-th-name="${_csrf.parameterName}" 
+                    data-th-value="${_csrf.token}">
+
+                <div class="form-row">
+                    <input 
+                        type="text" 
+                        class="delete-input ibm-plex-sans-light"
+                        data-th-field="*{confirmationMessage}"
+                        placeholder="delete-all-completed-tasks">
+
+                    <button 
+                        type="submit"
+                        class="clear-button ibm-plex-sans-regular">
+                        Delete
+                    </button>
+
+                </div>
+                
+                <span 
+                    data-th-if="*{#fields.hasErrors('confirmationMessage')}"
+                    data-th-errors="*{confirmationMessage}"
+                    class="error-message ibm-plex-sans-light">
+                </span>
+            </form>
+            
+        </div>
+
+        <form 
+            method="POST" 
+            action="/logout">
+            <input 
+                type="hidden" 
+                data-th-name="${_csrf.parameterName}" 
+                data-th-value="${_csrf.token}">
+
+            <button 
+                type="submit"
+                class="long-button ibm-plex-sans-medium">
+                Log out
+            </button>
+        </form>
+    </div>
+</body>
+</html>

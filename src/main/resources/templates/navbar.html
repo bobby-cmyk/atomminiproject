@@ -5,18 +5,9 @@
         alt="Atom Logo">
     </a>
 
-    <form 
-        method="POST" 
-        action="/logout">
-        <input 
-            type="hidden" 
-            data-th-name="${_csrf.parameterName}" 
-            data-th-value="${_csrf.token}">
-
-        <button 
-            type="submit"
-            class="logout-button ibm-plex-sans-medium">
-            Log out
-        </button>
-    </form>
+    <a 
+        href="/profile/overview" 
+        class="nav-button ibm-plex-sans-medium">
+        Profile
+    </a>
 </nav>

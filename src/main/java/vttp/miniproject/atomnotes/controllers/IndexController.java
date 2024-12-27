@@ -12,7 +12,7 @@ public class IndexController {
     @GetMapping(path={"/index", "/"})
     public ModelAndView indexRedirect() {
         ModelAndView mav = new ModelAndView();
-
+        // redirect to homepage
         mav.setViewName("redirect:/task/all");
 
         return mav;
