@@ -98,12 +98,9 @@
 
                 <form 
                     method="GET"
-                    action="/task/edit"
+                    data-th-action="@{/task/edit/{taskId}(taskId=${task.id})}"
                     class="edit-form">
-                    <input 
-                        type="hidden" 
-                        name="taskId" 
-                        data-th-value="*{id}">
+
                     <button 
                         type="submit"
                         data-th-class="*{priority ? 'circle-button priority-button' : 'circle-button'}">

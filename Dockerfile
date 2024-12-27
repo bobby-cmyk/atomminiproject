@@ -1,4 +1,4 @@
-FROM eclipse-temurin:23-noble AS builder
+FROM eclipse-temurin:22-jdk AS builder
 
 WORKDIR /src
 
@@ -12,7 +12,8 @@ COPY src src
 # make mvnw executable
 RUN chmod a+x mvnw && /src/mvnw package -Dmaven.test.skip=true
 
-FROM eclipse-temurin:23-jre-noble
+# Run with jdk 22
+FROM eclipse-temurin:22-jre
 
 WORKDIR /app
 

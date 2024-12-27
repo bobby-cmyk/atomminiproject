@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -207,9 +208,9 @@ public class TaskController {
         return mav;
     }
 
-    @GetMapping("/edit")
+    @GetMapping("/edit/{taskId}")
     public ModelAndView getEditTaskForm(
-        @RequestParam("taskId") String taskId
+       @PathVariable("taskId") String taskId
     ) 
     {
         ModelAndView mav = new ModelAndView();
