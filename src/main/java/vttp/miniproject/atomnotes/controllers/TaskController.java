@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import jakarta.validation.Valid;
@@ -250,6 +255,38 @@ public class TaskController {
         return mav;
     }
 
+    @GetMapping("/tools")
+    public ModelAndView getTaksTools() {
+        ModelAndView mav = new ModelAndView();
+
+        mav.addObject("deleteConfirmation", new DeleteConfirmation());
+        mav.setViewName("task-tools");
+        return mav;
+    }
+
+    @GetMapping("/export")
+    @ResponseBody 
+    public ResponseEntity<byte[]> exportAllTasks(
+        @AuthenticationPrincipal AuthUserDetails authUser,
+        @AuthenticationPrincipal OAuth2User oAuth2User
+    ) 
+    {
+        String userId = getUserId(authUser, oAuth2User);
+
+        List<Task> allTasks = taskSvc.getAllSortedCurrentTasks(userId);
+        allTasks.addAll(taskSvc.getAllSortedCompletedTasks(userId));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("text", "csv"));
+        headers.setContentDispositionFormData("attachment", "tasks_%s.csv".formatted(userId));
+
+        byte[] csvBytes = Task.generateCsv(allTasks);
+
+        logger.info("User: %s exported tasks csv".formatted(userId));
+
+        return new ResponseEntity<>(csvBytes, headers, HttpStatus.OK);
+    };
+
     @PostMapping("/clear")
     public ModelAndView deleteAllCompletedTasks(
         @AuthenticationPrincipal AuthUserDetails authUser,
@@ -263,7 +300,7 @@ public class TaskController {
 
         if (bindings.hasErrors()) {
             
-            mav.setViewName("/profile");
+            mav.setViewName("redirect:/profile");
             return mav;
         }
 

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import vttp.miniproject.atomnotes.models.AuthUserDetails;
-import vttp.miniproject.atomnotes.models.DeleteConfirmation;
 import vttp.miniproject.atomnotes.models.UserStats;
 import vttp.miniproject.atomnotes.services.StatsService;
 
@@ -44,7 +43,6 @@ public class ProfileController {
         
         mav.addObject("userStats", userStats);
         mav.addObject("username", username);
-        mav.addObject("deleteConfirmation", new DeleteConfirmation());
         mav.setViewName("profile");
         
         return mav;

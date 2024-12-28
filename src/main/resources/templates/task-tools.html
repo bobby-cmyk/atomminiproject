@@ -16,7 +16,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="Atom" />
     <link rel="manifest" href="/favicon/site.webmanifest" />
-    <title>Profile | Atom</title>
+    <title>Export/Delete Tasks | Atom</title>
 </head>
 <body class="main-container" data-th-object="${userStats}">
 
@@ -25,22 +25,37 @@
     <div class="cards-container">
         <div class="card">
             <h2 class="card-title libre-baskerville-regular">
-               Generate API Token
+               Export All Tasks
             </h2>
             <p class="card-body ibm-plex-sans-regular"> 
-                Tokens will be valid for 24 hours once generated. 
-                Please copy and paste it somewhere secure. 
-                Read up on 
-                <a 
-                    class="documentation-link"
-                    href="dev/documentation">
-                    API documentation
-                </a>.
+                Download all your tasks in CSV.
+            </p>
+
+            <form 
+                method="GET" 
+                action="/task/export"
+                class="form-container">
+
+                <button 
+                    class="long-button generate-token-button ibm-plex-sans-regular"
+                    type="submit">
+                    Export
+                </button>
+            </form>
+        </div>
+        <div class="card danger-card">
+            <h1 class="card-title danger-title libre-baskerville-regular">
+                Clear Complete Tasks
+            </h1>
+
+            <p class="card-body ibm-plex-sans-regular">
+                This will permanently delete all your past completed tasks. Please type <code>'delete-all-completed-tasks'</code> to proceed.
             </p>
 
             <form 
                 method="POST" 
-                action="/dev/token"
+                action="/task/clear" 
+                data-th-object="${deleteConfirmation}"
                 class="form-container">
 
                 <input 
@@ -48,16 +63,25 @@
                     data-th-name="${_csrf.parameterName}" 
                     data-th-value="${_csrf.token}">
 
-                <p class="token-container">
-                    <code data-th-text="${apiToken}"></code>
-                </p>
+                <input 
+                    type="text" 
+                    class="form-input danger-input ibm-plex-sans-light"
+                    data-th-field="*{confirmationMessage}"
+                    placeholder="delete-all-completed-tasks">
 
                 <button 
-                    class="long-button generate-token-button ibm-plex-sans-regular"
-                    type="submit">
-                    Generate Token
+                    type="submit"
+                    class="long-button danger-button ibm-plex-sans-regular">
+                    Delete
                 </button>
+                
+                <span 
+                    data-th-if="*{#fields.hasErrors('confirmationMessage')}"
+                    data-th-errors="*{confirmationMessage}"
+                    class="error-message ibm-plex-sans-light">
+                </span>
             </form>
+            
         </div>
     </div>
 </body>

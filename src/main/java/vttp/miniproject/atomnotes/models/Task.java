@@ -1,5 +1,6 @@
 package vttp.miniproject.atomnotes.models;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -137,6 +138,28 @@ public class Task {
         }
 
         return subtasks;
+    }
+
+    public static byte[] generateCsv(List<Task> allTasks) {
+        
+        String CSV_HEADER = "id,createdTime,lastUpdatedTime,completedTime,content,subtasks,imageUrl,priority";
+    
+        StringBuilder csvContent = new StringBuilder();
+
+        csvContent.append(CSV_HEADER).append("\n");
+
+        for (Task task : allTasks) {
+            csvContent.append(task.getId()).append(",")
+                      .append(task.getCreatedTime()).append(",")
+                      .append(task.getLastUpdatedTime()).append(",")
+                      .append(task.getCompletedTimeObj()).append(",")
+                      .append(task.getContent()).append(",")
+                      .append(task.getSubtasksString()).append(",")
+                      .append(task.getImageUrl()).append(",")
+                      .append(task.isPriority()).append("\n");
+        }   
+
+        return csvContent.toString().getBytes(StandardCharsets.UTF_8);
     }
 
     public JsonObject taskToJsonObj() {

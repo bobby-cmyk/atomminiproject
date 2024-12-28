@@ -24,20 +24,30 @@
 
     <div class="cards-container">
 
-        <div class="card overview-card">
+        <div class="card">
             <h2 class="card-title overview-title libre-baskerville-regular">
                Hey <b><span data-th-text="${username}"></span></b>!
             </h2>
-            <div class="overview-body-container">
-                <p data-th-text="*{todayOverview}"
-                    class="card-body overview-body ibm-plex-sans-regular"> 
-                </p>
-            </div>
+            <p data-th-text="*{todayOverview}"
+                class="card-body overview-body ibm-plex-sans-regular"> 
+            </p>
         </div>
 
         <div class="card">
+            <h2 class="card-title overview-title libre-baskerville-regular">
+                Your past few days...
+            </h2>
 
-            <div class="card-row"> 
+            <p 
+                data-th-text="*{previousWeekOverview}"
+                class="card-body overview-body ibm-plex-sans-regular">
+            </p>
+
+        </div>
+
+        <div class="card stat-card">
+
+            <div class="stats-row"> 
                 <div class="stat">
                     <p 
                         data-th-text="*{currentTasks}"
@@ -54,17 +64,12 @@
                     <p class="stat-title ibm-plex-sans-light">Today's Completed</p>
                 </div>
 
-                <div class="stat">
-                    <p 
-                        data-th-text="*{completedTasks}"
-                        class="stat-number libre-baskerville-regular">
-                        123
-                    </p>
-                    <p class="stat-title ibm-plex-sans-light">All Time Completed</p>
-                </div>
+                
             </div>
+        </div>
 
-            <div class="card-row">
+        <div class="card stat-card">
+            <div class="stats-row">
                 <div class="stat">
                     <p 
                         data-th-text="*{tasksCreatedPerDay}"
@@ -81,6 +86,19 @@
                     <p class="stat-title ibm-plex-sans-light">Tasks completed / day</p>
                 </div>
 
+            </div>
+        </div>
+
+        <div class="card stat-card">
+            <div class="stats-row">
+                <div class="stat">
+                    <p 
+                        data-th-text="*{completedTasks}"
+                        class="stat-number libre-baskerville-regular">
+                        123
+                    </p>
+                    <p class="stat-title ibm-plex-sans-light">All Time Completed</p>
+                </div>
                 <div class="stat">
                     <p  
                         data-th-text="*{userJoinedDate}"
@@ -92,111 +110,56 @@
         </div>
 
         <div class="card">
-            <h2 class="card-title  libre-baskerville-regular">
-                Your past few days...
-            </h2>
+            <h1 class="card-title libre-baskerville-regular">
+                Other Tools
+            </h1>
 
-            <p 
-                data-th-text="*{previousWeekOverview}"
-                class="card-body ibm-plex-sans-light">
+            <p class="card-body ibm-plex-sans-light">
+                Tinkering around?
             </p>
-
+            <div class="form-container">
+                <a 
+                    href="/task/tools"
+                    class="long-button other-tools-button ibm-plex-sans-medium">
+                    Export/Delete Tasks
+                </a>
+         
+                <a  
+                    href="/dev"
+                    class="long-button other-tools-button ibm-plex-sans-medium">
+                    Dev Tools
+                </a> 
+            </div>
         </div>
 
         <div class="card">
             <h1 class="card-title libre-baskerville-regular">
-                Export Tasks CSV
+                Log Out
             </h1>
 
             <p class="card-body ibm-plex-sans-light">
-                Export all tasks details (current and completed). Please type 'export-all-tasks' to proceed.
+                Going already? See you soon!
             </p>
 
-            <form method="POST" action="/task/clear" data-th-object="${deleteConfirmation}">
-
+            <form 
+                method="POST" 
+                action="/logout"
+                class="form-container">
                 <input 
                     type="hidden" 
                     data-th-name="${_csrf.parameterName}" 
                     data-th-value="${_csrf.token}">
 
-                <div class="form-row">
-                    <input 
-                        type="text" 
-                        class="delete-input ibm-plex-sans-light"
-                        data-th-field="*{confirmationMessage}"
-                        placeholder="delete-all-completed-tasks">
-
-                    <button 
-                        type="submit"
-                        class="delete-button ibm-plex-sans-regular">
-                        Delete
-                    </button>
-
-                </div>
-                
-                <span 
-                    data-th-if="*{#fields.hasErrors('confirmationMessage')}"
-                    data-th-errors="*{confirmationMessage}"
-                    class="error-message ibm-plex-sans-light">
-                </span>
+                <button 
+                    type="submit"
+                    class="long-button profile-form-button ibm-plex-sans-medium">
+                    Log out
+                </button>
             </form>
             
         </div>
 
-        <div class="card">
-            <h1 class="card-title danger-title libre-baskerville-regular">
-                DANGER
-            </h1>
-
-            <p class="card-body ibm-plex-sans-light">
-                This will permanently delete all your past completed tasks. Please type 'delete-all-completed-tasks' to proceed.
-            </p>
-
-            <form method="POST" action="/profile/clear" data-th-object="${deleteConfirmation}">
-
-                <input 
-                    type="hidden" 
-                    data-th-name="${_csrf.parameterName}" 
-                    data-th-value="${_csrf.token}">
-
-                <div class="form-row">
-                    <input 
-                        type="text" 
-                        class="delete-input ibm-plex-sans-light"
-                        data-th-field="*{confirmationMessage}"
-                        placeholder="delete-all-completed-tasks">
-
-                    <button 
-                        type="submit"
-                        class="clear-button ibm-plex-sans-regular">
-                        Delete
-                    </button>
-
-                </div>
-                
-                <span 
-                    data-th-if="*{#fields.hasErrors('confirmationMessage')}"
-                    data-th-errors="*{confirmationMessage}"
-                    class="error-message ibm-plex-sans-light">
-                </span>
-            </form>
-            
-        </div>
-
-        <form 
-            method="POST" 
-            action="/logout">
-            <input 
-                type="hidden" 
-                data-th-name="${_csrf.parameterName}" 
-                data-th-value="${_csrf.token}">
-
-            <button 
-                type="submit"
-                class="long-button ibm-plex-sans-medium">
-                Log out
-            </button>
-        </form>
+        
     </div>
 </body>
 </html>

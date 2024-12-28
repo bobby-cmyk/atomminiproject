@@ -21,7 +21,7 @@ import vttp.miniproject.atomnotes.services.ApiService;
 
 @Component
 public class ApiTokenFilter extends OncePerRequestFilter {
-
+    
     @Autowired
     private ApiService apiSvc;
 
@@ -37,53 +37,41 @@ public class ApiTokenFilter extends OncePerRequestFilter {
         try {
             String header = request.getHeader("Authorization");
 
-            if (header == null || !header.startsWith("Bearer ")) {
-                throw new SecurityException("Missing or invalid Authorization header");
+            if (header != null && header.startsWith("Bearer ")) {
+                // The substring after "Bearer "
+                String token = header.substring(7);
+
+                if (apiSvc.tokenExist(token)) {
+                    String userId = apiSvc.retrieveByToken(token);
+                    UserEntity user = userRepo.getUserEntity(userId);
+
+                    AuthUserDetails authUser = new AuthUserDetails(
+                        user.getId(),
+                        user.getUsername(),
+                        user.getPassword(),  
+                        List.of(() -> "ROLE_" + user.getRole()));
+
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                authUser, 
+                                null, 
+                                authUser.getAuthorities());
+
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                } else {
+                    throw new SecurityException("Token does not exist");
+                }
             }
 
-            // Extract and validate the token
-            String token = header.substring(7);
-
-            if (apiSvc.tokenExist(token)) {
-                String userId = apiSvc.retrieveByToken(token);
-
-                if (userId == null) {
-                    throw new IllegalArgumentException("Invalid token: user ID not found");
-                }
-
-                UserEntity user = userRepo.getUserEntity(userId);
-
-                if (user == null) {
-                    throw new IllegalArgumentException("User not found for the given token");
-                }
-
-                AuthUserDetails authUser = new AuthUserDetails(
-                    user.getId(),
-                    user.getUsername(),
-                    user.getPassword(),
-                    List.of(() -> "ROLE_" + user.getRole()));
-
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                            authUser,
-                            null,
-                            authUser.getAuthorities());
-
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            } else {
-                throw new SecurityException("Token does not exist");
-            }
-
-            // Proceed with the filter chain
             filterChain.doFilter(request, response);
 
-        } catch (SecurityException e) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Unauthorized: " + e.getMessage());
         } catch (IllegalArgumentException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().write("Bad Request: " + e.getMessage());
+        } catch (SecurityException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Unauthorized: " + e.getMessage());
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().write("Internal Server Error: " + e.getMessage());

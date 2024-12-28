@@ -9,5 +9,4 @@ public class AtomnotesApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(AtomnotesApplication.class, args);
 	}
-
 }
