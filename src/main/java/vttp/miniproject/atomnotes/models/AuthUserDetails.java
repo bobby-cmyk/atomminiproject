@@ -5,7 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
-public class AuthUserDetails  implements UserDetails {
+public class AuthUserDetails implements UserDetails {
 
     private String id;
     private String username;

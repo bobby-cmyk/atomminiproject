@@ -38,8 +38,6 @@ public class AppConfig {
         return createRedisTemplate(redisDatabase);
     }
 
-    // Give it a name that we can call
-    // Could also create a constant
     private RedisTemplate<String, String> createRedisTemplate(int database) {
         // Create a database configuration
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(redisHost, redisPort);

@@ -51,7 +51,7 @@ public class TaskService {
         return task;
     }
 
-    public List<Task> getAllSortedTasks(String userId) {
+    public List<Task> getAllSortedCurrentTasks(String userId) {
 
         List<Task> tasks = taskRepo.getAllCurrentTasks(userId);
 
@@ -79,9 +79,9 @@ public class TaskService {
 
         // Sort reverse, descending from latest to oldest
         List<Task> sortedTasks = tasks.stream()
-            .sorted((t1, t2) -> Long.compare(t2.getLastUpdatedTime(), t1.getLastUpdatedTime()))
+            .sorted((t1, t2) -> Long.compare(t2.getCompletedTime(), t1.getCompletedTime()))
             .collect(Collectors.toList());
-               
+
         return sortedTasks;
     }
 

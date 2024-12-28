@@ -28,7 +28,7 @@ public class CacheRepo {
         
     }
 
-    // set quote quote ex 600
+    // set quote quote ex 3600
     public void cacheQuote(String quote) {
 
         ValueOperations<String, String> valueOps = template.opsForValue();
@@ -50,7 +50,7 @@ public class CacheRepo {
         return template.hasKey(STATS_PREFIX + userId);
     }
 
-    // set "stats:userId" values ex 600
+    // set "stats:userId" values ex 3600
     public void cacheStats(UserStats userStats, String userId) {
 
         HashOperations<String, String, String> hashOps = template.opsForHash();

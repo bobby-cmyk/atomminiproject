@@ -1,5 +1,6 @@
 package vttp.miniproject.atomnotes.repositories;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,6 +22,7 @@ public class UserRepo {
     private final String USER_PREFIX = "user:";
     private final String EMAIL_PREFIX = "emailToUserId:";
     private final String USERNAME_PREFIX = "usernameToUserId:";
+    private final String API_PREFIX = "apiToken:";
 
     // hset "user:userId" id : idValue email : emailValue ...
     // set "emailToUserId:userEmail"
@@ -50,12 +52,12 @@ public class UserRepo {
         }  
     }
 
-    // exist "emailToUserId:email"
+    // exists "emailToUserId:email"
     public boolean isEmailTaken(String email) {
         return template.hasKey(EMAIL_PREFIX + email);
     }
 
-    // exist "usernameToUserId:username"
+    // exists "usernameToUserId:username"
     public boolean isUsernameTaken(String username) {
         return template.hasKey(USERNAME_PREFIX + username);
     }
@@ -79,9 +81,27 @@ public class UserRepo {
         return user;
     }
 
-    // exist "user:userId"
+    // exists "user:userId"
     public boolean isIdTaken(String userId) {
         return template.hasKey(USER_PREFIX + userId);
+    }
+
+    // set "token: userId" token ex 86,400
+    public void storeUserApiToken(String userId, String token) {
+        
+        ValueOperations<String, String> valueOps = template.opsForValue();
+
+        valueOps.set(API_PREFIX + token, userId, Duration.ofHours(24));
+    }
+
+    // get "apiToken:token"
+    public String getIdFromToken(String token) {
+        return template.opsForValue().get(API_PREFIX + token);
+    }
+
+    // exists "apiToken:token"
+    public boolean tokenExist(String token) {
+        return template.hasKey(API_PREFIX +token);
     }
 
 }

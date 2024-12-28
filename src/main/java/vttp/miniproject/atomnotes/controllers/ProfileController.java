@@ -1,5 +1,8 @@
 package vttp.miniproject.atomnotes.controllers;
 
+import static vttp.miniproject.atomnotes.controllers.TaskController.getUserId;
+import static vttp.miniproject.atomnotes.controllers.TaskController.getUsername;
+
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +19,7 @@ import vttp.miniproject.atomnotes.models.UserStats;
 import vttp.miniproject.atomnotes.services.StatsService;
 
 @Controller
-@RequestMapping("/profile")
+@RequestMapping
 public class ProfileController {
 
     @Autowired
@@ -24,7 +27,7 @@ public class ProfileController {
 
     private final Logger logger = Logger.getLogger(ProfileController.class.getName());
     
-    @GetMapping("/overview")
+    @GetMapping("/profile")
     public ModelAndView profilePage(
         @AuthenticationPrincipal AuthUserDetails authUser,
         @AuthenticationPrincipal OAuth2User oAuth2User
@@ -46,21 +49,4 @@ public class ProfileController {
         
         return mav;
     }
-
-    private String getUserId(AuthUserDetails authUser, OAuth2User oAuth2User) {
-
-        if (authUser == null) {
-            return oAuth2User.getAttribute("sub");
-        }
-        return authUser.getId();
-    }
-
-    private String getUsername(AuthUserDetails authUser, OAuth2User oAuth2User) {
-
-        if (authUser == null) {
-            return oAuth2User.getAttribute("name");
-        }
-        return authUser.getUsername();
-    }
-
 }

@@ -1,19 +1,33 @@
 package vttp.miniproject.atomnotes.configurations;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import vttp.miniproject.atomnotes.securityFilters.ApiTokenFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    
+
+    @Autowired
+    private ApiTokenFilter apiTokenFilter;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         return http
+                // To allow API key access
+                .csrf(
+                    csrf -> {
+                        csrf.ignoringRequestMatchers(
+                            request -> request.getHeader("Authorization") != null);
+                        }
+                )
                 .authorizeHttpRequests(
                     authorizeHttp -> {
                         authorizeHttp.requestMatchers(
@@ -29,6 +43,9 @@ public class SecurityConfig {
                         authorizeHttp.anyRequest().authenticated();
                     }
                 )
+
+                .addFilterBefore(apiTokenFilter, UsernamePasswordAuthenticationFilter.class)
+
                 .formLogin(login -> {
                     login
                         .loginPage("/login")

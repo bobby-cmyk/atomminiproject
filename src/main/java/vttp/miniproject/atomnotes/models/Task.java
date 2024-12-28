@@ -5,6 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.json.Json;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
+import jakarta.json.JsonValue;
 import jakarta.validation.constraints.NotBlank;
 
 public class Task {
@@ -132,33 +138,48 @@ public class Task {
 
         return subtasks;
     }
+
+    public JsonObject taskToJsonObj() {
+
+        JsonObjectBuilder taskObjBuilder = Json.createObjectBuilder();
+        
+        taskObjBuilder
+            .add("id", id)
+            .add("createdTime", createdTime)
+            .add("lastUpdatedTime", lastUpdatedTime)
+            .add("completedTime", getCompletedTimeObj())
+            .add("content", content)
+            .add("subtasks", subTasksToJsonArr())
+            .add("imageUrl", imageUrl)
+            .add("priority", priority);
+
+        return taskObjBuilder.build();
+    }
+
+    private JsonArray subTasksToJsonArr() {
+
+        JsonArrayBuilder arrBuilder = Json.createArrayBuilder();
+
+        for (String subtask : subtasks) {
+            arrBuilder.add(subtask);
+        }
+
+        return arrBuilder.build();
+    }
+
+    private JsonValue getCompletedTimeObj() {
+        if (completedTime == null) {
+            return Json.createValue("NA"); 
+        } else {
+            return Json.createValue(completedTime);
+        }
+    }
+    
+    @Override
+    public String toString() {
+        return "Task [id=" + id + ", createdTime=" + createdTime + ", lastUpdatedTime=" + lastUpdatedTime
+                + ", completedTime=" + completedTime + ", subtasks=" + subtasks + ", imageUrl=" + imageUrl
+                + ", priority=" + priority + ", content=" + content + "]";
+    }
 }
 
-
-
-    
-
-    /* 
-
-    public JsonObject getTaskJsonObject() {
-        
-        JsonObject object = Json.createObjectBuilder()
-            .add("createdTime", getCreatedTime())
-            .add("content", getContent())
-            .build();
-
-        return object;
-    }
-        
-    public String getAddedDateTime() {
-        
-        Instant instant = Instant.ofEpochMilli(addedEpochTime);
-        ZoneId zoneId = ZoneId.systemDefault();
-        LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
-
-        // Define the formatter to match "Mon, 2:30pm, 26 Nov 2024"
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE, h:mma, d MMM yyyy", java.util.Locale.ENGLISH);
-        
-        return localDateTime.format(formatter);
-    }
-    */
