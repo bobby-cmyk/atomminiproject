@@ -474,7 +474,7 @@
 
 .overview-body {
     font-size: 18px;
-    margin-top: 16px;
+    margin-top: 8px;
     margin-bottom: 24px;
 }
 
@@ -579,7 +579,7 @@
 
 .api-doc-link {
     font-weight: bold;
-    color: #d87e5c;
+    color: #000000;
 }
 
 .doc-container {
