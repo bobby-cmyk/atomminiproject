@@ -21,14 +21,13 @@ public class CacheRepo {
     private final String QUOTE_PREFIX = "quote";
     private final String STATS_PREFIX = "stats:";
 
-    // exists quote
+    // exists "quote"
     public boolean checkQuoteCached() {
 
         return template.hasKey(QUOTE_PREFIX);
-        
     }
 
-    // set quote quote ex 3600
+    // set "quote" quote ex 3600
     public void cacheQuote(String quote) {
 
         ValueOperations<String, String> valueOps = template.opsForValue();
@@ -36,7 +35,7 @@ public class CacheRepo {
         valueOps.set(QUOTE_PREFIX, quote, Duration.ofMinutes(60));
     }
 
-    // get quote
+    // get "quote"
     public String retrieveCachedQuote() {
 
         ValueOperations<String, String> valueOps = template.opsForValue();

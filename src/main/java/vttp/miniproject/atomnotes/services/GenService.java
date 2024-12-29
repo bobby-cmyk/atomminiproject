@@ -44,21 +44,6 @@ public class GenService {
 
     private final Logger logger = Logger.getLogger(GenService.class.getName());
 
-    public String generateMainTopic(String content) {
-        
-        String systemPrompt = "Extract the main object or event in one word or a phrase";
-
-        try {
-            return promptGPT(systemPrompt, content, GPT4OMINI);
-        }
-
-        catch(Exception e) {
-            logger.warning("Error: generateMainTopic(). Message: %s".formatted(e.getMessage()));
-            // As default placeholder if error
-            return "sunset mountain";
-        }
-    }
-
     public List<String> generateSubtasks(String content) {
 
         String systemPrompt = "Break down task into 3 smaller subtasks. Keep concise. Output format: 'subtask1|subtask2|subtask3'.";
@@ -192,6 +177,21 @@ public class GenService {
             imageUrl = "https://images.unsplash.com/photo-1672237020985-2e38261617f9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w2ODQxMjd8MHwxfHNlYXJjaHwzfHxzdW5zZXQlMjBtb3VudGFpbnxlbnwwfHx8fDE3MzUwMjQxMjB8MA&ixlib=rb-4.0.3&q=80&w=1080";
             
             return imageUrl;
+        }
+    }
+
+    private String generateMainTopic(String content) {
+        
+        String systemPrompt = "Extract the main object or event in one word or a phrase";
+
+        try {
+            return promptGPT(systemPrompt, content, GPT4OMINI);
+        }
+
+        catch(Exception e) {
+            logger.warning("Error: generateMainTopic(). Message: %s".formatted(e.getMessage()));
+            // As default placeholder if error
+            return "sunset mountain";
         }
     }
 

@@ -16,9 +16,9 @@ public class ApiService {
     public String generateApiToken(String userId) {
 
         // Will only be shown once 
-
         String token = UUID.randomUUID().toString();
 
+        // Store in cache, valid for 24 hours
         userRepo.storeUserApiToken(userId, token);
          
         return token;

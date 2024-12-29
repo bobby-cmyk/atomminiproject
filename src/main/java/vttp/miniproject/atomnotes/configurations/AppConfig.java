@@ -16,8 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class AppConfig {
     private final Logger logger = Logger.getLogger(AppConfig.class.getName());
-
-    // Get all the redis configuration into the class
+    
     @Value("${spring.data.redis.host}")
     private String redisHost;
 

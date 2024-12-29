@@ -38,7 +38,7 @@ public class StatsService {
 
             UserStats userStats = cacheRepo.retrieveCacheStats(userId);
 
-            // Check number of completed or current tasks remained same, retrieve stats from cache
+            // Check number of completed or current tasks remained same, retrieve stats from cache -> assuming change is not large enough for another api call
             if (userStats.getCompletedTasks() == numberOfCompletedTasks(userId) && userStats.getCurrentTasks() == numberOfCurrentTasks(userId)) {
                 return userStats;
             }
@@ -139,7 +139,6 @@ public class StatsService {
 
         List<Task> todayCompletedTasks = new ArrayList<>();
 
-        
         Instant now = Instant.now();
         ZoneId zoneId = ZoneId.systemDefault();
         LocalDate today = now.atZone(zoneId).toLocalDate();

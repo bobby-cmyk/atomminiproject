@@ -83,16 +83,16 @@ public class Task {
 
         Map<String, String> values = new HashMap<>();
 
-        values.put("id", this.id);
-        values.put("createdTime", Long.toString(this.createdTime));
-        values.put("lastUpdatedTime", Long.toString(this.lastUpdatedTime));
-        values.put("content", this.content);
+        values.put("id", id);
+        values.put("createdTime", Long.toString(createdTime));
+        values.put("lastUpdatedTime", Long.toString(lastUpdatedTime));
+        values.put("content", content);
         values.put("subtasks", getSubtasksString());
-        values.put("imageUrl", this.imageUrl);
-        values.put("priority", Boolean.toString(this.priority));
+        values.put("imageUrl", imageUrl);
+        values.put("priority", Boolean.toString(priority));
 
-        if (this.completedTime != null) {
-            values.put("completedTime", Long.toString(this.completedTime));
+        if (completedTime != null) {
+            values.put("completedTime", Long.toString(completedTime));
         }
         
         return values;

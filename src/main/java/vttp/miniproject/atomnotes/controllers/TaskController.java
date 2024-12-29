@@ -1,5 +1,9 @@
 package vttp.miniproject.atomnotes.controllers;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -85,6 +89,8 @@ public class TaskController {
         // Redirect to homepage
         if (statsSvc.numberOfCurrentTasks(userId) >= 10) {
 
+            logger.info("User: %s has reached maximum number of current tasks. Unable to add more tasks.");
+
             mav.setViewName("redirect:/task/all");
 
             return mav;
@@ -112,7 +118,6 @@ public class TaskController {
 
         String userId = getUserId(authUser, oAuth2User);
 
-        // Syntax validation for task form
         if (bindings.hasErrors()) {
 
             mav.setViewName("task-new");
@@ -120,6 +125,7 @@ public class TaskController {
             return mav;
         }
 
+        // Summarise task content into one word and query for an image on Unsplash
         String imageUrl = genSvc.retrieveImageUrl(task.getContent());
 
         task.setImageUrl(imageUrl);
@@ -162,7 +168,6 @@ public class TaskController {
     {
         ModelAndView mav = new ModelAndView();
 
-        // Syntax validation for task form
         if (bindings.hasErrors()) {
 
             mav.setViewName("task-new");
@@ -191,7 +196,6 @@ public class TaskController {
     {
         ModelAndView mav = new ModelAndView();
 
-        // Syntax validation for task form
         if (bindings.hasErrors()) {
 
             mav.setViewName("task-edit");
@@ -238,7 +242,6 @@ public class TaskController {
     {  
         ModelAndView mav = new ModelAndView();
 
-        // Syntax validation for task form
         if (bindings.hasErrors()) {
 
             mav.setViewName("task-edit");
@@ -259,8 +262,10 @@ public class TaskController {
     public ModelAndView getTaksTools() {
         ModelAndView mav = new ModelAndView();
 
+        // Add a DeleteConfirmation object for confirmation before deleting tasks
         mav.addObject("deleteConfirmation", new DeleteConfirmation());
         mav.setViewName("task-tools");
+
         return mav;
     }
 
@@ -276,11 +281,16 @@ public class TaskController {
         List<Task> allTasks = taskSvc.getAllSortedCurrentTasks(userId);
         allTasks.addAll(taskSvc.getAllSortedCompletedTasks(userId));
 
+        // Convert List<Task> to csvBytes
+        byte[] csvBytes = Task.generateCsv(allTasks);
+
+        // Get current Date
+        ZonedDateTime date = Instant.now().atZone(ZoneId.systemDefault());
+        String formattedDate = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("text", "csv"));
-        headers.setContentDispositionFormData("attachment", "tasks_%s.csv".formatted(userId));
-
-        byte[] csvBytes = Task.generateCsv(allTasks);
+        headers.setContentDispositionFormData("attachment", "tasks_%s_%s.csv".formatted(formattedDate, userId));
 
         logger.info("User: %s exported tasks csv".formatted(userId));
 
@@ -298,15 +308,17 @@ public class TaskController {
 
         ModelAndView mav = new ModelAndView();
 
+        // If the confirmation message is wrong
         if (bindings.hasErrors()) {
             
             mav.setViewName("task-tools");
+
             return mav;
         }
 
-        logger.info("User: %s cleared all completed tasks".formatted(userId));
-
         taskSvc.clearAllCompletedTasks(userId);
+
+        logger.info("User: %s cleared all completed tasks".formatted(userId));
 
         mav.setViewName("redirect:/profile");
 

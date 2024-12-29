@@ -20,17 +20,16 @@
 </head>
 <body>
     <div class="doc-container ibm-plex-sans-regular">
-        <!-- Logo -->
+        
         <img 
-        class="doc-logo" 
-        src="/logos/black_transparent.png"
-        alt="Atom Logo">
+            class="doc-logo" 
+            src="/logos/black_transparent.png"
+            alt="Atom Logo">
 
         <h1>Atom API Documentation</h1>
 
         <p>
-        Welcome to the Atom API documentation. Below, you’ll find details 
-        on how to authenticate and how to use endpoints.
+            Welcome to the Atom API documentation. Below, you’ll find details on how to authenticate and how to use endpoints.
         </p>
 
         <div>
@@ -45,7 +44,6 @@
 
         <div>
             <h2>Endpoints</h2>
-
         <div>
             <h3>GET <code class="doc-code">/tasks/all</code></h3>
             <p>Retrieve all tasks (both current and completed) for the authenticated user.</p>
@@ -57,28 +55,28 @@
             </pre>
             <strong>Example Response:</strong>
             <pre class="doc-pre">
-            [
-                {
-                    "id": "123",
-                    "createdTime": 1690000000000,
-                    "lastUpdatedTime": 1690000500000,
-                    "completedTime": "NA",
-                    "content": "Complete the project setup",
-                    "subtasks": ["Install dependencies","Setup database"],
-                    "imageUrl": "https://example.com/image.png",
-                    "priority": false
-                },
-                {
-                    "id": "456",
-                    "createdTime": 1690000100000,
-                    "lastUpdatedTime": 1690000600000,
-                    "completedTime": 1690000800000,
-                    "content": "Review PR #22",
-                    "subtasks": [],
-                    "imageUrl": https://example.com/image.png,
-                    "priority": true
-                }
-            ]
+                [
+                    {
+                        "id": "123",
+                        "createdTime": 1690000000000,
+                        "lastUpdatedTime": 1690000500000,
+                        "completedTime": "NA",
+                        "content": "Complete the project setup",
+                        "subtasks": ["Install dependencies","Setup database"],
+                        "imageUrl": "https://example.com/image.png",
+                        "priority": false
+                    },
+                    {
+                        "id": "456",
+                        "createdTime": 1690000100000,
+                        "lastUpdatedTime": 1690000600000,
+                        "completedTime": 1690000800000,
+                        "content": "Review PR #22",
+                        "subtasks": [],
+                        "imageUrl": https://example.com/image.png,
+                        "priority": true
+                    }
+                ]
             </pre>
         </div>
 
@@ -93,18 +91,18 @@
             </pre>
             <strong>Example Response:</strong>
             <pre class="doc-pre">
-            [
-                {
-                    "id": "123",
-                    "createdTime": 1690000000000,
-                    "lastUpdatedTime": 1690000500000,
-                    "completedTime": "NA",
-                    "content": "Complete the project setup",
-                    "subtasks": ["Install dependencies","Setup database"],
-                    "imageUrl": "https://example.com/image.png",
-                    "priority": false
-                }
-            ]
+                [
+                    {
+                        "id": "123",
+                        "createdTime": 1690000000000,
+                        "lastUpdatedTime": 1690000500000,
+                        "completedTime": "NA",
+                        "content": "Complete the project setup",
+                        "subtasks": ["Install dependencies","Setup database"],
+                        "imageUrl": "https://example.com/image.png",
+                        "priority": false
+                    }
+                ]
             </pre>
         </div>
 
@@ -119,18 +117,18 @@
             </pre>
             <strong>Example Response:</strong>
             <pre class="doc-pre">
-            [
-                {
-                    "id": "789",
-                    "createdTime": 1690000200000,
-                    "lastUpdatedTime": 1690000800000,
-                    "completedTime": 1690001200000,
-                    "content": "Finalize documentation",
-                    "subtasks": [],
-                    "imageUrl": "https://example.com/image.png",
-                    "priority": false
-                }
-            ]
+                [
+                    {
+                        "id": "789",
+                        "createdTime": 1690000200000,
+                        "lastUpdatedTime": 1690000800000,
+                        "completedTime": 1690001200000,
+                        "content": "Finalize documentation",
+                        "subtasks": [],
+                        "imageUrl": "https://example.com/image.png",
+                        "priority": false
+                    }
+                ]
             </pre>
         </div>
     </div>
