@@ -54,7 +54,9 @@
                         data-th-text="${numberOfTasks}"
                         class="stat-number libre-baskerville-regular">
                     </p>
-                    <p class="stat-label ibm-plex-sans-light">Current Tasks</p>
+                    <p class="stat-label ibm-plex-sans-light">
+                        Current Task<span data-th-if="${numberOfTasks > 1}">s</span>
+                    </p>
                 </div>
 
                 <div class="quote libre-baskerville-regular-italic">

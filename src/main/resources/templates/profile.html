@@ -53,7 +53,9 @@
                         data-th-text="*{currentTasks}"
                         class="stat-number libre-baskerville-regular">
                     </p>
-                    <p class="stat-title ibm-plex-sans-light">Current Tasks</p>
+                    <p class="stat-title ibm-plex-sans-light">
+                        Current Task<span data-th-if="*{currentTasks > 1}">s</span>
+                    </p>
                 </div>
 
                 <div class="stat">
@@ -75,7 +77,9 @@
                         data-th-text="*{tasksCreatedPerDay}"
                         class="stat-number libre-baskerville-regular">
                     </p>
-                    <p class="stat-title ibm-plex-sans-light">Tasks created / day</p>
+                    <p class="stat-title ibm-plex-sans-light">
+                        Task<span data-th-if="*{tasksCreatedPerDay > 1}">s</span> created / day
+                    </p>
                 </div>
 
                 <div class="stat">
@@ -83,7 +87,9 @@
                         data-th-text="*{tasksCompletedPerDay}"
                         class="stat-number libre-baskerville-regular">
                     </p>
-                    <p class="stat-title ibm-plex-sans-light">Tasks completed / day</p>
+                    <p class="stat-title ibm-plex-sans-light">
+                        Task<span data-th-if="*{tasksCompletedPerDay > 1}">s</span> completed / day
+                    </p>
                 </div>
 
             </div>
