@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel='stylesheet' href="/css/reset.css">
+    <link rel='stylesheet' href="/css/fonts.css">
+    <link rel='stylesheet' href="/css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-bold-straight/css/uicons-bold-straight.css">
+    <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Atom" />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
+    <title>API Documentation | Atom</title>
+</head>
+<body>
+    <div class="doc-container ibm-plex-sans-regular">
+        <!-- Logo -->
+        <img 
+        class="doc-logo" 
+        src="/logos/black_transparent.png"
+        alt="Atom Logo">
+
+        <h1>Atom API Documentation</h1>
+
+        <p>
+        Welcome to the Atom API documentation. Below, you’ll find details 
+        on how to authenticate and how to use endpoints.
+        </p>
+
+        <div>
+            <h2>Authentication</h2>
+            <p>
+                All endpoints require a valid Bearer token to be included in the 
+                <code class="doc-code">Authorization</code> header:
+            </p>
+
+            <pre class="doc-pre">Authorization: Bearer &lt;your-token&gt;</pre>
+        </div>
+
+        <div>
+            <h2>Endpoints</h2>
+
+        <div>
+            <h3>GET <code class="doc-code">/tasks/all</code></h3>
+            <p>Retrieve all tasks (both current and completed) for the authenticated user.</p>
+            <strong>Example Request:</strong>
+            <pre class="doc-pre">
+                curl -X GET \
+                https://atomapp.up.railway.app/api/tasks/all \
+                -H "Authorization: Bearer &lt;your-token&gt;"
+            </pre>
+            <strong>Example Response:</strong>
+            <pre class="doc-pre">
+            [
+                {
+                    "id": "123",
+                    "createdTime": 1690000000000,
+                    "lastUpdatedTime": 1690000500000,
+                    "completedTime": "NA",
+                    "content": "Complete the project setup",
+                    "subtasks": ["Install dependencies","Setup database"],
+                    "imageUrl": "https://example.com/image.png",
+                    "priority": false
+                },
+                {
+                    "id": "456",
+                    "createdTime": 1690000100000,
+                    "lastUpdatedTime": 1690000600000,
+                    "completedTime": 1690000800000,
+                    "content": "Review PR #22",
+                    "subtasks": [],
+                    "imageUrl": https://example.com/image.png,
+                    "priority": true
+                }
+            ]
+            </pre>
+        </div>
+
+        <div>
+            <h3>GET <code class="doc-code">/tasks/current</code></h3>
+            <p>Retrieve all current (incomplete) tasks for the authenticated user.</p>
+            <strong>Example Request:</strong>
+            <pre class="doc-pre">
+                curl -X GET \
+                https://atomapp.up.railway.app/api/tasks/current \
+                -H "Authorization: Bearer &lt;your-token&gt;"
+            </pre>
+            <strong>Example Response:</strong>
+            <pre class="doc-pre">
+            [
+                {
+                    "id": "123",
+                    "createdTime": 1690000000000,
+                    "lastUpdatedTime": 1690000500000,
+                    "completedTime": "NA",
+                    "content": "Complete the project setup",
+                    "subtasks": ["Install dependencies","Setup database"],
+                    "imageUrl": "https://example.com/image.png",
+                    "priority": false
+                }
+            ]
+            </pre>
+        </div>
+
+        <div>
+            <h3>GET <code class="doc-code">/tasks/completed</code></h3>
+            <p>Retrieve all completed tasks for the authenticated user.</p>
+            <strong>Example Request:</strong>
+            <pre class="doc-pre">
+                curl -X GET \
+                https://atomapp.up.railway.app/api/tasks/completed \
+                -H "Authorization: Bearer &lt;your-token&gt;"
+            </pre>
+            <strong>Example Response:</strong>
+            <pre class="doc-pre">
+            [
+                {
+                    "id": "789",
+                    "createdTime": 1690000200000,
+                    "lastUpdatedTime": 1690000800000,
+                    "completedTime": 1690001200000,
+                    "content": "Finalize documentation",
+                    "subtasks": [],
+                    "imageUrl": "https://example.com/image.png",
+                    "priority": false
+                }
+            ]
+            </pre>
+        </div>
+    </div>
+    
+    <a href="/" class="long-button doc-button">Go Back Home</a>
+
+</body>
+</html>

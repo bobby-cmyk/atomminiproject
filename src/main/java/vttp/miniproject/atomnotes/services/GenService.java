@@ -86,10 +86,10 @@ public class GenService {
           
         // If there are no tasks, return default message
         if (currentTasks.isEmpty() && completedTasksToday.isEmpty()) {
-            return "Hmm... looks empty. Let's get started!";
+            return "Hmm... its looking empty today.";
         }
 
-        String systemPrompt = "Provide an overview of user's todo list for the day. Be encouraging and motivating. Keep it concise and precise, 50 words. Avoid formatting.";
+        String systemPrompt = "Provide a summary of user's todo list for the day. Motivating tone. Keep it concise and precise, 50 words. Avoid formatting.";
 
         String userPrompt = todayOverviewPromptBuilder(currentTasks, completedTasksToday);
 
@@ -107,10 +107,10 @@ public class GenService {
         
         // If there are no tasks, return default message
         if (completedTasksPreviousWeek.isEmpty()) {
-            return "You did not complete any task last week!";
+            return "Hmm... there's no tasks completed.";
         }
 
-        String systemPrompt = "Provide an overview of user's completed tasks for the past few days. Be encouraging and motivating. Keep it concise and precise, 50 words. Avoid formatting.";
+        String systemPrompt = "Provide a summary of user's completed tasks for the past few days. Motivating tone. Keep it concise and precise, 50 words. Avoid formatting.";
 
         String userPrompt = previousWeekOverviewPromptBuilder(completedTasksPreviousWeek);
 

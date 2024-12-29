@@ -141,27 +141,43 @@ public class Task {
     }
 
     public static byte[] generateCsv(List<Task> allTasks) {
-        
+
         String CSV_HEADER = "id,createdTime,lastUpdatedTime,completedTime,content,subtasks,imageUrl,priority";
-    
+        
         StringBuilder csvContent = new StringBuilder();
-
         csvContent.append(CSV_HEADER).append("\n");
-
+        
         for (Task task : allTasks) {
-            csvContent.append(task.getId()).append(",")
-                      .append(task.getCreatedTime()).append(",")
-                      .append(task.getLastUpdatedTime()).append(",")
-                      .append(task.getCompletedTimeObj()).append(",")
-                      .append(task.getContent()).append(",")
-                      .append(task.getSubtasksString()).append(",")
-                      .append(task.getImageUrl()).append(",")
-                      .append(task.isPriority()).append("\n");
-        }   
-
+            csvContent.append(escapeCsv(String.valueOf(task.getId()))).append(",")
+                      .append(escapeCsv(String.valueOf(task.getCreatedTime()))).append(",")
+                      .append(escapeCsv(String.valueOf(task.getLastUpdatedTime()))).append(",")
+                      .append(escapeCsv(String.valueOf(task.getCompletedTimeObj()))).append(",")
+                      .append(escapeCsv(task.getContent())).append(",")
+                      .append(escapeCsv(task.getSubtasksString())).append(",")
+                      .append(escapeCsv(task.getImageUrl())).append(",")
+                      .append(escapeCsv(String.valueOf(task.isPriority()))).append("\n");
+        }
         return csvContent.toString().getBytes(StandardCharsets.UTF_8);
     }
 
+    private static String escapeCsv(String field) {
+        if (field == null) {
+            return "";
+        }       // Check if the field needs to be quoted (contains comma, quote, or line break)
+        boolean needQuotes = field.contains(",") 
+                             || field.contains("\"") 
+                             || field.contains("\n") 
+                             || field.contains("\r");
+        
+        if (needQuotes) {
+            // Replace all occurrences of " with ""
+            field = field.replace("\"", "\"\"");
+            // Wrap the field in quotes
+            field = "\"" + field + "\"";
+        }
+        return field;
+    }
+    
     public JsonObject taskToJsonObj() {
 
         JsonObjectBuilder taskObjBuilder = Json.createObjectBuilder();

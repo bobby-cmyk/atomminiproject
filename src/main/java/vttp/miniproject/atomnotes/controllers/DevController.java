@@ -50,4 +50,13 @@ public class DevController {
 
         return mav;
     }
+
+    @GetMapping("/documentation")
+    public ModelAndView getDocumentation() {
+        ModelAndView mav = new ModelAndView();
+
+        mav.setViewName("documentation.html");
+
+        return mav;
+    }
 }

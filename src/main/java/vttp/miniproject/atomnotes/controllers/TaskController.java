@@ -147,7 +147,7 @@ public class TaskController {
 
         taskSvc.completeTask(taskId, userId);
 
-        logger.info("User: %s deleted a task id: %s".formatted(userId, taskId));
+        logger.info("User: %s completed a task: %s".formatted(userId, taskId));
 
         mav.setViewName("redirect:/task/all");
 
@@ -264,7 +264,7 @@ public class TaskController {
         return mav;
     }
 
-    @GetMapping("/export")
+    @GetMapping(path="/export", produces="text/csv")
     @ResponseBody 
     public ResponseEntity<byte[]> exportAllTasks(
         @AuthenticationPrincipal AuthUserDetails authUser,
@@ -300,7 +300,7 @@ public class TaskController {
 
         if (bindings.hasErrors()) {
             
-            mav.setViewName("redirect:/profile");
+            mav.setViewName("task-tools");
             return mav;
         }
 
@@ -308,7 +308,8 @@ public class TaskController {
 
         taskSvc.clearAllCompletedTasks(userId);
 
-        mav.setViewName("redirect:/task/all");
+        mav.setViewName("redirect:/profile");
+
         return mav;
     }
 

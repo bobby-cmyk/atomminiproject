@@ -38,7 +38,8 @@ public class SecurityConfig {
                             "/login/oauth2/**",
                             "/css/**", 
                             "/logos/**",
-                            "/favicon/**")
+                            "/favicon/**",
+                            "/dev/documentation")
                             .permitAll();
                         authorizeHttp.anyRequest().authenticated();
                     }
